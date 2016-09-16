@@ -16,17 +16,60 @@ Computers `learn' in two ways. The first class of programs (or algorithms) are c
 
 However, research in unsupervised learning has still not been able to explain the success of some of these algorithms. Under what situations should one algorithm be preferred over the other? What conditions are needed for a certain algorithm succeed? Even more importantly, under what conditions would the given algorithm fail? Current research has little to no answer to these questions. These questions become very critical, like in the domain of self-driving cars, where human lives are at stake. In April 2016, EU even approved a law giving its citizens a \textit{right to explanation} of algorithmic decisions. My research aims to answer the above questions and fill this knowledge gap. I am applying for this scholarship  to support my research on \textbf{Foundations of clustering}, a popular class of unsupervised learning algorithms. 
 
-\section{Specifics of Project}
+\section{Research Specifics}
 \subsection{Background}
-Clustering refers to a popular class of unsupervised learning algorithms. Let us assume that we are given a list of objects. The list of objects could be images, astronomical data (measurements from planets, stars etc.), DNA sequences, users from a marketing survey, outputs from an industrial process or something else. Given such a list, the goal of clustering is to group similar objects together and to separate dis-similar objects.
+Clustering refers to a popular class of unsupervised learning algorithms. Let us assume that we are given a list of objects. The list of objects could be images, astronomical data (measurements from planets, stars etc.), DNA sequences, users of an online service, outputs from an industrial process or something else. Given such a list, the goal of clustering is to group `similar' objects together and to separate dissimilar objects.
 
-\subsection{Literature Survey}
+\subsection{Challenges}
+The task of clustering is often \textit{under-specified}. It is challenging due to the following reasons.
+\begin{itemize}
+\item \textit{Multiple solutions} - Consider the problem of clustering users from a medical database. The output of the clustering algorithm can be used to identify patients who have similar symptoms, say for diagnostic purposes or to identify patients who have similar treatment complexity/costs, say for insurance purposes. Diseases with completely different symptoms could have similar costs and diseases with similar symptoms could have very different costs due to gender, race, genetic factors.  Hence, the same data should be clustered in different ways depending upon the application. 
+\item \textit{Computationally expensive} - Even in cases when a single solution exists, finding that solution is not easy. Consider the problem of clustering a list of size, say one million. Let's say we want to find three groups in this list. Even in such a simple case, the number of possibilities to consider is $\sim 10^{18}$. A naive clustering algorithm would take atleast thousand years to complete even on the fastest of computers. Mathematicians have defined a notion called \textit{NP-Hard} to characterize such difficult problems. Indeed, clustering has been proven to be NP-Hard under many natural computational models.
+\end{itemize} 
 
-\section{My contributions}
+In Section \ref{section:literaturesurvey}, I will discuss some of the methods other researchers have used in tackling the above challenges and point out some of the missing pieces. In Section \ref{section:methodology}, I will discuss the progress I have made in tackling these challenges. In Section \ref{section:timeline}, I will present a more detailed discussion on some of the open questions that I plan tackle in the immediate future.
 
-\section{Proposed research}
+\section{Literature Survey}
+\label{section:literaturesurvey}
+
+\section{Methodology}
+\label{section:methodology}
+
+\section{Timeline}
+\label{section:timeline}
 
 \section{Conclusion}
 \end{document}
 
 %The process is very similar to how a human baby learns (for example writing alphabets). Large amounts of data (say, sounds of different alphabets) is fed to the algorithm along with the `correct' value (text of alphabets). The algorithm then learns to identify and distinguish the different patterns (alphabets).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
