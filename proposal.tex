@@ -1,5 +1,8 @@
 \documentclass[11pt]{article}
 \usepackage{geometry}
+\usepackage{color}
+
+\newcommand{\mc}{\mathcal}
 
 \title{\textbf{Research Proposal}}
 \author{Shrinu Kushagra\\
@@ -21,16 +24,42 @@ However, research in unsupervised learning has still not been able to explain th
 Clustering refers to a popular class of unsupervised learning algorithms. Let us assume that we are given a list of objects. The list of objects could be images, astronomical data (measurements from planets, stars etc.), DNA sequences, users of an online service, outputs from an industrial process or something else. Given such a list, the goal of clustering is to group `similar' objects together and to separate dissimilar objects.
 
 \subsection{Challenges}
+\label{subsection:challenges}
 The task of clustering is often \textit{under-specified}. It is challenging due to the following reasons.
 \begin{itemize}
 \item \textit{Multiple solutions} - Consider the problem of clustering users from a medical database. The output of the clustering algorithm can be used to identify patients who have similar symptoms, say for diagnostic purposes or to identify patients who have similar treatment complexity/costs, say for insurance purposes. Diseases with completely different symptoms could have similar costs and diseases with similar symptoms could have very different costs due to gender, race, genetic factors.  Hence, the same data should be clustered in different ways depending upon the application. 
 \item \textit{Computationally expensive} - Even in cases when a single solution exists, finding that solution is not easy. Consider the problem of clustering a list of size, say one million. Let's say we want to find three groups in this list. Even in such a simple case, the number of possibilities to consider is $\sim 10^{18}$. A naive clustering algorithm would take atleast thousand years to complete even on the fastest of computers. Mathematicians have defined a notion called \textit{NP-Hard} to characterize such difficult problems. Indeed, clustering has been proven to be NP-Hard under many natural computational models.
+\item \textit{Metric} - Another challenge in clustering is defining the notion of \textit{similarity}. Given any pair of objects, how do we measure how similar or dissimilar one object is to another. Without such a measure, there is no hope to cluster the entire list. In a lot of applications, standard mathematical notions of similarity like euclidean-distance, manhattan-distance etc. suffice. However, sometimes custom measures of similarity have to be designed/supplied by the user. In this proposal, we will assume that a suitable metric has been provided by the user and focus on the first two challenges. 
 \end{itemize} 
 
-In Section \ref{section:literaturesurvey}, I will discuss some of the methods other researchers have used in tackling the above challenges and point out some of the missing pieces. In Section \ref{section:methodology}, I will discuss the progress I have made in tackling these challenges. In Section \ref{section:timeline}, I will present a more detailed discussion on some of the open questions that I plan tackle in the immediate future.
+In Section \ref{section:literaturesurvey}, I will discuss the methods that have been used in tackling the above challenges and point out some of the missing pieces. In Section \ref{section:methodology}, I will discuss the progress I have made in tackling these challenges. In Section \ref{section:timeline}, I will present a more detailed discussion on some of the open questions that I plan tackle in the immediate future.
 
 \section{Literature Survey}
 \label{section:literaturesurvey}
+The goal of clustering is to partition a list of objects (data) into groups of similar objects. As discussed in the previous section, it is computationally expensive to find the best clustering. Researchers have tried to get around this problem in the following way. A cost is associated with every feasible grouping of the list. The goal is now to find a grouping of minimum cost. This grouping is sometimes referred to as the \textit{optimal clustering}. Two popular methods which use this technique are $k$-means {\color{red} [???]} and the $k$-median {\color{red} [???]} clustering algorithm. $k$-means is by far the most popular clustering algorithm. However, these techniques still do not solve the challenges listed in Section \ref{subsection:challenges}. 
+\begin{itemize}
+\item Researchers have shown that finding the optimal solution to the $k$-means cost is NP-Hard {\color{red} [???]}.  Informally, this means that there exist lists such that finding the best grouping of these lists is \textbf{computationally expensive}.  Also, no algorithm is known which can find the grouping in a reasonable amount of time. 
+\item Researchers have also shown that the $k$-means and $k$-median can sometimes output counter-intuitive groupings {\color{red} [???]}. These algorithms can not capture \textbf{multiple solutions}.
+\end{itemize}
+Despite these challenges, the $k$-means and $k$-median algorithms have been employed successfully in practice. Some applications include cancerous data detection, search engines etc. {\color{red} [???]}. Researchers then examined this gap between theory and practice. One hypothesis that has recently gained traction is that ``Clustering is difficult only when it doesn't matter" or the CDNM thesis {\color{red} [???]}. This means that the data on which clustering algorithms are computationally expensive do not occur in practice. Researchers have characterized real-world data sets by defining mathematical notions of \textit{clusterable} data. As a result, provably efficient clustering algorithms can be found for these so called {\em nice} data.  
+
+In the past few years, there has been a line of work on defining notions of clusterability. The goal of all these methods has been to show that clustering is computationally efficient if the input $\mc X$ enjoys some nice structure. In {\color{red} [???]\cite{bilu2012stable}}, a clustering instance is considered to be \emph{stable} if the optimal solution to a given objective function does not change under small multiplicative perturbations of distances between the points. Using this assumption, they give an efficient algorithm to find the max-cut clustering of graphs which are resilient to $O(\sqrt{|\mc X|})$ perturbations. Using a similar assumption, {\color{red} [???]\cite{ackerman2009clusterability}} considered additive perturbations of the underlying metric and designed an efficient algorithm that outputs a clustering with near-optimal cost. 
+
+In terms of clusterability conditions, the most relevant previous papers are those addressing clsutering under {\em $\alpha$-center proximity} condition (see Def.~\ref{defn:alphacp}).
+Assuming that the centers belong to $\mc X$ ({\em proper} setting),  {\color{red} [???]\cite{awasthi2012center}} shows an efficient algorithm that outputs the optimal solution of a given center-based objective assuming that optimal solution satisfies the $(\alpha > 3)$-center proximity. This result was improved to $(\alpha = \sqrt{2} + 1 \approx 2.4)$ when the objective is $k$-median {\color{red} [???]\cite{balcan2012clustering}}. In {\color{red} [???]\cite{ben2014data}} it was shown that unless P$=$NP such a result cannot be obtained for $(\alpha <2)$-center proximal inputs.
+
+However, as mentioned above, these results apply only to the noiseless case.
+Few methods have been suggested for analyzing clusterability in the presence of noise. 
+{\color{red} [???]\cite{balcan2012clustering}} considers a dataset which has $\alpha$-center proximity except for an $\epsilon$ fraction of the points. They give an efficient algorithm which provides a $1+O(\epsilon)$-approximation to the cost of the $k$-median optimal solution when $\alpha > 2+\sqrt{7} \approx 4.6$. Note that, while this result applies to adversarial noise as well, it only yields an approximation to the desired solution and  the approximation guarantee is heavily influenced by the size of noise. 
+
+In a different line of work, {\color{red} [???]\cite{ben2014clustering}} studied the problem of robustifying any center-based clustering objective to noise. To achieve this goal, they introduce the notion of {\em center separation} (look at Def. \ref{defn:lambdacs}). Informally, an input has center separation when it can be covered by $k$ well-separated set of balls.
+Given such an input, they propose a paradigm which converts any center-based clustering algorithm into a clustering algorithm which is robust to small amount of noise.
+Although this framework works for any objective-based clustering algorithm, it requires a strong restriction on the noise and clusterability of the data. For example, when the size of the noise is $\frac{5}{100}|\mc X|$, their algorithm is able to obtain a robustified version of $2$-median, only if $\mc X$ is covered by $k$ unit balls which are separated with distance $10$. 
+
+Supervision in clustering (sometimes also referred to as `semi-supervised clustering') has been addressed before, mostly in application-oriented works ({\color{red} [???]\cite{basu2002semi,basu2004probabilistic, kulis2009semi}}). The most common method to convey such supervision is through a set of pairwise \emph{link/do-not-link} constraints on the instances. Note that in contrast to the supervision we address here, in the setting of the papers cited above, the supervision is non-interactive. On the theory side, Balcan et. al {\color{red} [???]\cite{balcan2008clustering}} propose a framework for interactive clustering with the help of a user (i.e., an oracle). The queries considered in that framework are different from ours. In particular, the oracle is provided with the current clustering, and tells the algorithm to either split a cluster or merge two clusters. Note that in that setting, the oracle should be able to evaluate the whole given clustering for each query.
+
+Another example of the use of supervision in clustering was provided by Ashtiani and Ben-David {\color{red} [???]\cite{ashtiani2015representation}}. They assumed that the target clustering can be approximated by first mapping the data points to a new space and then performing $k$-means clustering. The supervision is in the form of a clustering of a small subset of data (the subset provided by the learning algorithm) and is used to search for such a mapping.
+
 
 \section{Methodology}
 \label{section:methodology}
