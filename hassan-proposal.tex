@@ -1,0 +1,1229 @@
+% uWaterloo Thesis Template for LaTeX 
+% Last Updated May 24, 2011 by Stephen Carr, IST Client Services
+% FOR ASSISTANCE, please send mail to rt-IST-CSmathsci@ist.uwaterloo.ca
+
+% Effective October 2006, the University of Waterloo 
+% requires electronic thesis submission. See the uWaterloo thesis regulations at
+% http://www.grad.uwaterloo.ca/Thesis_Regs/thesistofc.asp.
+
+% DON'T FORGET TO ADD YOUR OWN NAME AND TITLE in the "hyperref" package
+% configuration below. THIS INFORMATION GETS EMBEDDED IN THE PDF FINAL PDF DOCUMENT.
+% You can view the information if you view Properties of the PDF document.
+
+% Many faculties/departments also require one or more printed
+% copies. This template attempts to satisfy both types of output. 
+% It is based on the standard "book" document class which provides all necessary 
+% sectioning structures and allows multi-part theses.
+
+% DISCLAIMER
+% To the best of our knowledge, this template satisfies the current uWaterloo requirements.
+% However, it is your responsibility to assure that you have met all 
+% requirements of the University and your particular department.
+% Many thanks to the feedback from many graduates that assisted the development of this template.
+
+% -----------------------------------------------------------------------
+
+% By default, output is produced that is geared toward generating a PDF 
+% version optimized for viewing on an electronic display, including 
+% hyperlinks within the PDF.
+ 
+% E.g. to process a thesis called "mythesis.tex" based on this template, run:
+
+% pdflatex mythesis	-- first pass of the pdflatex processor
+% bibtex mythesis	-- generates bibliography from .bib data file(s) 
+% pdflatex mythesis	-- fixes cross-references, bibliographic references, etc
+% pdflatex mythesis	-- fixes cross-references, bibliographic references, etc
+
+% If you use the recommended LaTeX editor, Texmaker, you would open the mythesis.tex
+% file, then click the pdflatex button. Then run BibTeX (under the Tools menu).
+% Then click the pdflatex button two more times. If you have an index as well,
+% you'll need to run MakeIndex from the Tools menu as well, before running pdflatex
+% the last two times.
+
+% N.B. The "pdftex" program allows graphics in the following formats to be
+% included with the "\includegraphics" command: PNG, PDF, JPEG, TIFF
+% Tip 1: Generate your figures and photos in the size you want them to appear
+% in your thesis, rather than scaling them with \includegraphics options.
+% Tip 2: Any drawings you do should be in scalable vector graphic formats:
+% SVG, PNG, WMF, EPS and then converted to PNG or PDF, so they are scalable in
+% the final PDF as well.
+% Tip 3: Photographs should be cropped and compressed so as not to be too large.
+
+% To create a PDF output that is optimized for double-sided printing: 
+%
+% 1) comment-out the \documentclass statement in the preamble below, and
+% un-comment the second \documentclass line.
+%
+% 2) change the value assigned below to the boolean variable
+% "PrintVersion" from "false" to "true".
+
+% --------------------- Start of Document Preamble -----------------------
+
+% Specify the document class, default style attributes, and page dimensions
+% For hyperlinked PDF, suitable for viewing on a computer, use this:
+\documentclass[letterpaper,12pt,titlepage,oneside,final]{book}
+ 
+% For PDF, suitable for double-sided printing, change the PrintVersion variable below
+% to "true" and use this \documentclass line instead of the one above:
+%\documentclass[letterpaper,12pt,titlepage,openright,twoside,final]{book}
+
+% Some LaTeX commands I define for my own nomenclature.
+% If you have to, it's better to change nomenclature once here than in a 
+% million places throughout your thesis!
+\newcommand{\package}[1]{\textbf{#1}} % package names in bold text
+\newcommand{\cmmd}[1]{\textbackslash\texttt{#1}} % command name in tt font 
+\newcommand{\href}[1]{#1} % does nothing, but defines the command so the
+    % print-optimized version will ignore \href tags (redefined by hyperref pkg).
+%\newcommand{\texorpdfstring}[2]{#1} % does nothing, but defines the command
+% Anything defined here may be redefined by packages added below...
+
+% This package allows if-then-else control structures.
+\usepackage{ifthen}
+\newboolean{PrintVersion}
+\setboolean{PrintVersion}{false} 
+% CHANGE THIS VALUE TO "true" as necessary, to improve printed results for hard copies
+% by overriding some options of the hyperref package below.
+
+%\usepackage{nomencl} % For a nomenclature (optional; available from ctan.org)
+\usepackage{amsmath,amssymb,amstext} % Lots of math symbols and environments
+\usepackage[pdftex]{graphicx} % For including graphics N.B. pdftex graphics driver 
+
+% Hyperlinks make it very easy to navigate an electronic document.
+% In addition, this is where you should specify the thesis title
+% and author as they appear in the properties of the PDF document.
+% Use the "hyperref" package 
+% N.B. HYPERREF MUST BE THE LAST PACKAGE LOADED; ADD ADDITIONAL PKGS ABOVE
+\usepackage[pdftex,letterpaper=true,pagebackref=false]{hyperref} % with basic options
+		% N.B. pagebackref=true provides links back from the References to the body text. This can cause trouble for printing.
+\hypersetup{
+    plainpages=false,       % needed if Roman numbers in frontpages
+    pdfpagelabels=true,     % adds page number as label in Acrobat's page count
+    bookmarks=true,         % show bookmarks bar?
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={uWaterloo\ LaTeX\ Thesis\ Template},    % title: CHANGE THIS TEXT!
+%    pdfauthor={Author},    % author: CHANGE THIS TEXT! and uncomment this line
+%    pdfsubject={Subject},  % subject: CHANGE THIS TEXT! and uncomment this line
+%    pdfkeywords={keyword1} {key2} {key3}, % list of keywords, and uncomment this line if desired
+    pdfnewwindow=true,      % links in new window
+    colorlinks=true,        % false: boxed links; true: colored links
+    linkcolor=blue,         % color of internal links
+    citecolor=green,        % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=cyan           % color of external links
+}
+\ifthenelse{\boolean{PrintVersion}}{   % for improved print quality, change some hyperref options
+\hypersetup{	% override some previously defined hyperref options
+%    colorlinks,%
+    citecolor=black,%
+    filecolor=black,%
+    linkcolor=black,%
+    urlcolor=black}
+}{} % end of ifthenelse (no else)
+
+% Setting up the page margins...
+% uWaterloo thesis requirements specify a minimum of 1 inch (72pt) margin at the
+% top, bottom, and outside page edges and a 1.125 in. (81pt) gutter
+% margin (on binding side). While this is not an issue for electronic
+% viewing, a PDF may be printed, and so we have the same page layout for
+% both printed and electronic versions, we leave the gutter margin in.
+% Set margins to minimum permitted by uWaterloo thesis regulations:
+\setlength{\marginparwidth}{0pt} % width of margin notes
+% N.B. If margin notes are used, you must adjust \textwidth, \marginparwidth
+% and \marginparsep so that the space left between the margin notes and page
+% edge is less than 15 mm (0.6 in.)
+\setlength{\marginparsep}{0pt} % width of space between body text and margin notes
+\setlength{\evensidemargin}{0.125in} % Adds 1/8 in. to binding side of all 
+% even-numbered pages when the "twoside" printing option is selected
+\setlength{\oddsidemargin}{0.125in} % Adds 1/8 in. to the left of all pages
+% when "oneside" printing is selected, and to the left of all odd-numbered
+% pages when "twoside" printing is selected
+\setlength{\textwidth}{6.375in} % assuming US letter paper (8.5 in. x 11 in.) and 
+% side margins as above
+\raggedbottom
+
+% The following statement specifies the amount of space between
+% paragraphs. Other reasonable specifications are \bigskipamount and \smallskipamount.
+\setlength{\parskip}{\medskipamount}
+
+% The following statement controls the line spacing.  The default
+% spacing corresponds to good typographic conventions and only slight
+% changes (e.g., perhaps "1.2"), if any, should be made.
+\renewcommand{\baselinestretch}{1} % this is the default line space setting
+
+% By default, each chapter will start on a recto (right-hand side)
+% page.  We also force each section of the front pages to start on 
+% a recto page by inserting \cleardoublepage commands.
+% In many cases, this will require that the verso page be
+% blank and, while it should be counted, a page number should not be
+% printed.  The following statements ensure a page number is not
+% printed on an otherwise blank verso page.
+\let\origdoublepage\cleardoublepage
+\newcommand{\clearemptydoublepage}{%
+  \clearpage{\pagestyle{empty}\origdoublepage}}
+\let\cleardoublepage\clearemptydoublepage
+
+
+%I have added these
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+%\usepackage[round]{natbib}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{note}{Note}
+
+
+%======================================================================
+%   L O G I C A L    D O C U M E N T -- the content of your thesis
+%======================================================================
+\begin{document}
+
+% For a large document, it is a good idea to divide your thesis
+% into several files, each one containing one chapter.
+% To illustrate this idea, the "front pages" (i.e., title page,
+% declaration, borrowers' page, abstract, acknowledgements,
+% dedication, table of contents, list of tables, list of figures,
+% nomenclature) are contained within the file "uw-ethesis-frontpgs.tex" which is
+% included into the document by the following statement.
+%----------------------------------------------------------------------
+% FRONT MATERIAL
+%----------------------------------------------------------------------
+\input{uw-ethesis-frontpgs} 
+
+%----------------------------------------------------------------------
+% MAIN BODY
+%----------------------------------------------------------------------
+% Because this is a short document, and to reduce the number of files
+% needed for this template, the chapters are not separate
+% documents as suggested above, but you get the idea. If they were
+% separate documents, they would each start with the \chapter command, i.e, 
+% do not contain \documentclass or \begin{document} and \end{document} commands.
+%======================================================================
+\chapter{Introduction}
+%======================================================================
+Clustering can be thought as the task of automatically dividing a set of objects into ``coherent'' subsets. This definition is not concrete, but its vagueness allows it to serve as an umbrella term for a wide diversity of algorithmic paradigms. Clustering algorithms are being routinely applied in a huge variety of fields. 
+
+
+Given a dataset that needs to be clustered for some application, one can choose among a variety of different clustering algorithms, along with different preprocessing techniques, that are likely to result in dramatically different answers. It is therefore critical to incorporate prior knowledge about the data and the intended semantics of the clustering into the process of picking a clustering algorithm (or, clustering model selection). Regretfully, there seems to be no systematic tool for incorporation of domain expertise for clustering model selection, and such decisions are usually being made in embarrassingly  \textit{ad hoc} ways.
+
+Therefore, it is important to provide such a framework for clustering. Our aim is to address this problem and the related issues from a formal statistical viewpoint.
+
+
+\section{Clustering with Advice (CLAD)}
+
+
+We approach the challenge by introducing a scenario in which the domain expert (i.e., the intended user of the clustering) conveys her domain knowledge by providing a clustering of a small random subset of her data set. For example, consider a big customer service center that wishes to cluster incoming requests into groups to streamline their handling. Since the data base of requests is too large to be organized manually, the service center wishes to employ a clustering program. As the clustering designer, we would then ask the service center to pick a random sample of requests, manually cluster them, and show us the resulting grouping of that sample.  
+The clustering tool then should use that sample clustering to pick a clustering method that, when applied to the full data set, will result in a clustering that follows the patterns demonstrated by that sample clustering.
+
+We call this framework \emph{Clustering with Advice} (CLAD). It can be thought as a form of ``semi-supervised clustering''. Although the scenario is intuitive, it has not been studied before\footnote{There are other frameworks for clustering that have an element of supervision. For example, some methods use a form of \emph{side-information}. We will point out their differences later.}. Hence, it is useful and fruitful to investigate it thoroughly.
+
+There are a handful of important questions that should be answered about our framework (i.e., clustering with advice). In particular: 
+
+\begin{itemize}
+
+\item What kind of {\bf models} can we use to capture domain expert's knowledge?
+
+\item What kind of {\bf algorithmic/computational} approaches can we provide to infer/train the parameters of the proposed models?
+
+\item What sort of {\bf theoretical guarantees} should we expect from these algorithms?
+
+\item What are the {\bf assumptions} that we need to make to be able to show such performance guarantees?
+
+\item What are the real-world {\bf applications} of these algorithms?
+
+\item What are {\bf connections} between this framework and other related frameworks?
+
+
+\end{itemize}
+
+These are the main questions that we are interested to answer in our research. Other questions may certainly arise along the way. We have already made some progress showing that this line of research is fruitful.
+
+
+
+\section{Proposal Structure}
+
+In Chapter \ref{RLW} we review the related literature and point out their connection to our research.
+
+In Chapter \ref{METHOD}, we will introduce the formal framework to study the problem of clustering with advice. In particular, we formulate the problem as a \emph{representation learning} problem. In addition, we specify the PAC-type guarantee that we expect from a supervised clustering algorithm.
+
+In Chapter \ref{ANALYSIS}, we analyze the sample complexity of the proposed model. We investigate empirical risk minimizers and provide sufficient conditions to guarantee they are PAC-learners. In particular, we show that a generalized notion of \emph{pseudo-dimension} (analogous to VC-dimension for binary classification) characterizes PAC learnability of a class of representations.
+
+In Chapter \ref{CONCLUSION}, we conclude and investigate future research directions.
+
+%============================================
+\chapter{Related Work}
+\label{RLW}
+%=============================================
+
+In this chapter, we review the relevant literature on the problem of clustering with supervision. This area of research can be conceptually categorized under the ``semi-supervised learning'' field. However, we need to be more specific and distinguish between the clustering and the classification tasks. This differentiation has made several authors to name the clustering task as ``semi-supervised clustering'' (\cite{basu2002semi,basu2004probabilistic, kulis2009semi}).
+
+In the next section, we categorize semi-supervised clustering models in terms of the protocol used to convey supervision. Then, we will review different approaches to semi-supervised clustering.
+
+\section{Supervision Protocol}
+\label{SUP}
+
+The most common method to convey supervision is through a set of pairwise \emph{must-/cannot-link} constraints over the instances (\cite{wagstaff2001constrained}). These constraints are sometimes called ``side-information'' (\cite{xing2002distance}). In this setting it is usually assumed that the given data points lie in some metric space and the learner has access to the pairwise distances; however, this rough distance information is not enough for clustering and the supervised constraints should also be taken into account.
+
+It should be noted that the our CLAD protocol introduced in the Introduction is related to the above model. However, in CLAD, the learner has access to the clustering of a small set of instances (rather than the pairwise information).
+
+In some other scenarios, the supervised feedback is in the form of pairwise similarities (\cite{krishnamurthy2012efficient, eriksson2011active}). In this case, the goal is to learn a good clustering without seeing all the pairwise similarities. In order to reduce the amount of required supervision, usually an active setting is used where the pairwise constraints are asked by the learner gradually (\cite{krishnamurthy2012efficient, eriksson2011active}). In a related setting, \cite{voevodski2012active} considered an active framework where the learner, instead of asking about a pairwise similarity, makes a one-vs-all query (which means that the similarity of the instance with all of the other instances is requested).
+
+Inspired by the query models in concept learning (\cite{angluin1988queries}), Balcan et al. (\cite{balcan2008clustering}) proposed an interactive setup where in each step the learner outputs a clustering, and the teacher corrects him. This correction is either in the form of a \emph{split} advice, or a \emph{merge} advice. This type of supervision has the advantage of being more intuitive for the domain expert (i.e., the teacher). However, for large data sets with large number of clusters it is hard for the teacher to check the output of the learner in each step.
+
+
+\section{Semi-Supervised Clustering Methods}
+
+\subsection{Constrained Clustering}
+
+Semi-supervised clustering with pairwise constraints is probably the oldest method to inject supervision into clustering. The common way of using such supervision is by changing the objective of clustering so that violation of these constraints is penalized (\cite{demiriz1999semi,law2005model, basu2008constrained}). These methods are sometimes called ``constrained clustering''.
+
+There have been several attempts to benefit from supervision for k-means clustering. Wagstaff et al. (\cite{wagstaff2001constrained}) modified the well known Lloyd's algorithm (\cite{lloyd1982least}) to avoid assigning conflicting instances to the same cluster. Also, Basu et al. (\cite{basu2002semi}) used labeled data to initialize the centres for the Lloyd's algorithm.
+
+Hierarchical (i.e., agglomerative) clustering methods have also been extended to the supervised setting. In \cite{michel2012supervised}, pairwise constraints were used to prune the clustering tree. Davidson and Ravi (\cite{davidson2005agglomerative}) also studied this setting, and showed some computational hardness results about the satisfiability of these constraints.
+
+The problem with the constrained clustering is that most of the proposed methods are \emph{ad hoc} in two ways. First, the objective of clustering is selected in an ad hoc way without a clear justification. Second, the optimization problem is usually NP-hard, and only heuristics are used to solve the problem.
+
+
+\subsection{Metric Learning}
+
+Another approach---which is more relevant to our research---keeps the clustering optimization objective fixed and instead searches for a metric that roughly fits the given constraints. In particular, the metric is learned based on some objective function over metrics (\cite{xing2002distance, alipanahi2008distance,tang2007enhancing}), so that pairs of instances marked \emph{must-link} will be close in the new metric space (and \emph{cannot-link} pairs be considered as far apart).
+
+Note that however, these objective functions are usually rather \emph{ad hoc}. In particular, it is not clear in what sense they are compatible with the adopted clustering algorithm (such as $k$-means). This means that performing clustering in the new space does not necessarily result in a clustering consistent with the given side-information.
+
+A systematic way to define the objective of metric learning is to use the clustering loss directly. This is actually our approach in ReCLAD, as was briefly discussed in Introduction.
+
+Another way to address this deficiency is to combine the two optimization problems: the metric learning, and the constrained clustering. Bilenko et al. (\cite{bilenko2004integrating}) proposed an objective function to optimize the metric and the clustering in the same time. It then uses an iterative EM-type algorithm for optimization. Also, Basu et al. (\cite{basu2003comparing}) proposed a similar framework with a different objective. The drawbacks of these integrated models are similar to those of constrained clustering: unjustifiability of the used objective functions, and the high computational complexity.
+
+
+\subsection{The Merge-Split Model}
+
+In Section \ref{SUP}, we introduced the interactive clustering framework of Balcan and Blum (\cite{balcan2008clustering}). In this active setting, the learner outputs a clustering in each step, and the teacher corrects him by advising him to either merge two clusters or split a cluster. In the beginning, the only thing that the learner knows is that the true clustering belongs to a given set of possible clusterings (i.e., a hypothesis class). In \cite{balcan2008clustering,awasthi2010supervised}, the computational and information complexity of this problem was investigated, showing some upper and lower bounds (e.g., for the case of finite hypothesis classes). In \cite{awasthi2010supervised}, the scenario was extended to noisy teachers or a teacher with incomplete response.
+
+This model can be useful for certain applications. The interactive nature of the query model is particularly interesting. Also, the framework is theoretically solid and the algorithms are accompanied with nice theoretical results.
+
+However, there are some limitations. Most importantly, the positive results about this framework are weak. For instance, the nice upper bounds for the query complexity of this model are only proved for special cases---mainly for finite hypothesis classes. In addition, in order to get those bounds, it is expected from the teacher to respond to ``exponentially large-sized'' queries, a task that is certainly exhausting for teachers.
+
+It is however conceivable that making some modifications to this model -- through changing the queries/assumptions -- would make it more applicable.
+
+
+\subsection{Generative Models}
+
+Generative models are being used in different learning tasks, including semi-supervised clustering. In these models, it is assumed that the instances (together with their true assigned partitions) are generated from a distribution. The task is then to find the true distribution based on some observations. In order to make this possible, one needs to make strong assumptions about the distribution. The common approach is to consider a parametric distribution (e.g., mixture of Gaussian) and try to estimate its parameters.
+
+Basu et al. (\cite{basu2004probabilistic}) considered a generative model based on Hidden Markov Random Fields (HMRFs). They showed that this model can be regarded as a probabilistic interpretation of \cite{basu2003comparing}, where the Euclidean distortion is generalized to Bregman's divergence. It was then showed (\cite{kulis2009semi}) that this in turn is a special case of weighted kernel k-means (\cite{dhillon2004kernel}).
+
+In a recent paper, Gopal and Yang (\cite{gopaltransformation}) proposed an approach in which it is assumed that the data is generated by a mixture model (Gaussian or Von-Mises Fisher). The parameters of this model is then found such that the probability of generating the supervised labels is maximized.
+
+These models are useful when we have solid information about the data-generating distribution. However, in practice, the data is almost never truly generated from a mixture model. Therefore, at least an agnostic guarantee is needed to make sure that the outcome of the algorithm is the best possible model within the considered class. Second, the computational complexity is high and usually just a local minimum is found. Third, the maximum likelihood estimate is not a good objective, because it doesn't necessarily capture the true objective (i.e., the clustering loss). These drawbacks make the use of these methods limited.
+
+\subsection{Property-based Clustering}
+
+A totally different approach to the problem of communicating user expertise for the purpose of choosing a clustering tool is discussed in \cite{ackerman2010towards}. They considered a set of \textit{properties} (or \textit{requirements}) for clustering algorithms, and investigated which of those properties hold for various algorithms. The user can then pick the right algorithm based on the requirements that she wants the algorithm to meet.
+
+However, to turn such an approach into a practically useful tool, one will need to come up with properties that are relevant to the end user of clustering --a goal that is still far from being reached. Also, these properties are more useful for picking the general clustering paradigm (e.g., agglomerative or center-based), rather than picking the specific parameters (e.g, the target metric).
+
+
+%\subsection{Niceness-based Clustering}
+%
+%[balcan 2008 discriminative....idea of niceness and some results....also the clustering complexity]
+%[balcan 2009 clustering with similarity...is also the same I guess]
+%
+%[balcan 2009 approximate without approx]
+%[balcan 2009 agnostic clustering extends the previous one]
+%
+%
+%[eriksson 2011  about hierarchichal...shows under a niceness, you don't neeed all the pairwise smiliarityess....active algorithmn... ]
+%
+%[krishnamurti 2012 similar to above]
+%
+%
+%[Daniely 2012]
+
+
+\section{Conclusions}
+
+As it was discussed in the previous section, most of the research done on semi-supervised clustering is devoted to the algorithmic side of the problem\footnote{This is actually the case for the whole clustering literature}: each proposed method exploits the supervision in an optimization problem. However, the choice of objective function is rarely justified. In addition, the optimization problem is usually still hard, and the proposed algorithms find only a local optimum. In the following, we review the main drawbacks of different approaches.
+
+
+\begin{itemize}
+\item {\bf Why does optimizing the proposed objective capture our expectations from the task?} In practice, for constrained clustering and metric learning methods (or their combination) the objective function is selected in an ad hoc way. In addition, the maximum likelihood approach of generative models is not well justified.
+
+\item {\bf Are the proposed methods computationally efficient?} Most of the constrained clustering objectives are \emph{hard} to optimize (or approximate). This is usually the case for generative models as well. For the merge-split model also clustering can be hard.
+
+
+\item {\bf Are the sssumptions realistic?} In generative models, it is assumed that the data is generated by a specific parametric distribution. Unfortunately, there is no guarantee about the outcome of these methods when the true distribution fails to match the expectations.
+
+\item {\bf Are the proposed methods information-efficient?} or does the proposed method use the supervised data efficiently? Aside form some exceptions (including the merge-split model) no upper or lower bounds for the information/statistical complexity of the task is obtained. Even for the merge-split model, these results are not generally promising. In addition, contrary to supervised learning, proving generalization bounds for semi-supervised clustering is very rare.  
+
+
+\end{itemize}
+
+Therefore, there is still much room for research in semi-supervised clustering. In particular, there is a need for a theoretically solid work in this area, beyond just another heuristic algorithm.  
+
+
+
+
+%======================================================================
+\chapter{Representation Learning for CLAD}
+\label{METHOD}
+%======================================================================
+
+In this chapter, we propose a model to capture domain knowledge in the Clustering with Advice (CLAD) framework. The idea is to ``train'' a model based on the given supervised data in CLAD framework (i.e, the small random subset of data set that is clustered by the domain expert).
+
+The model used for this purpose should be flexible enough to be able to capture the domain expert's knowledge. In addition, aiming to achieve generalization guarantees for such an approach, it is essential to introduce some \emph{inductive bias} to avoid over-flexibility (and consequently over-fitting). We can do this by restricting the clustering model to be from a predetermined hypothesis class (or a set of concrete clustering algorithms). In the next section, we approach the problem from a representation learning perspective.
+
+
+\section{Representation Learning for CLAD (ReCLAD)}
+
+In this section, we propose a representation learning approach to the CLAD framework. We call this approach \textit{ReCLAD} which stands for \textit{REpresentation learning for CLustering with ADvice}.
+
+Assume that the expert-desirable clustering can be approximated by first embedding the sample into some Euclidean (or Hilbert) space, and then performing a fixed clustering algorithm (e.g., $k$-means clustering) in the new space. In this case, by approximating the implicit embedding, one can recover the clustering that is consistent with domain knowledge.
+
+To be concrete, we first formulate clustering with advice as a \emph{representation learning} problem. We do that by fixing a clustering algorithm, say $k$-means clustering, and searching for an embedding of the data under which $k$-means respects the given sample clustering. Note that any embedding corresponds to a ``kernel''; therefore, we can alternatively view this as a kernel learning problem.
+
+The choice of $k$-means in the above is however, rather arbitrary. In the next section, we formulate the ReCLAD problem for a general unsupervised clustering algorithm. However, as we will see, the case of $k$-means is especially interesting and will be studied separately.
+
+
+
+Our contribution in this chapter is to present ReCLAD model for the problem of clustering with advice. Furthermore, a precise formulation of ReCLAD is provided where an appropriate loss function is introduced to quantify the success of the learning algorithm. Then, we define the analogous notion of PAC-learnability\footnote{PAC stands for the well known notion of ``probably approximately correct'', popularized by \cite{valiant1984theory}.} for the problem of learning representation for clustering. 
+
+In the following, we provide the notations needed to introduce the PAC-ReCLAD framework.
+
+
+\section{Preliminaries and Notations}
+
+Let $X$ be a finite domain set. A \textit{$k$-clustering} of $X$ is a partition of $X$ into $k$ subsets. If $C$ is a $k$-clustering, we denote the subsets of the partition by $C_1,...,C_k$, therefore we have $C=\{C_1,..,C_k\}$. Let $\pi^k$ denote the set of all permutations over $[k]$ where $[k]$ denotes $\{1,2,...,k\}$. The clustering difference between two clusterings, $C^1$ and $C^2$, with respect to $X$ is defined by
+
+\begin{equation}
+\Delta_{X}(C^1, C^2) = \min_{\sigma \in \pi^k } \frac{1}{|X|} \sum_{i=1}^{k} |C^1_i \Delta C^2_{\sigma(i)}|
+\end{equation}
+
+where $|.|$ and $\Delta$ denote the cardinality and the symmetric difference of sets respectively. For a sample $S\subset X$, and $C^1$ (a partition of $X$), we define $C^1\Big|_S$ to be a partition of $S$ induced by $C^1$, namely $C^1\Big|_S = \{C^1_1\cap S,\ldots,C^1_k\cap S \}$. Accordingly, the sample-based difference between two partitions is defined by
+
+\begin{equation}
+\Delta_{S}(C^1, C^2) = \Delta_{S}(C^1\Big|_S, C^2\Big|_S)
+\end{equation}
+
+Fix an unsupervised clustering algorithm, e.g., $k$-means clustering, that given a data set, outputs a $k$-partition of the data. We denote $C_{X}$ as the outcome of clustering $X$ (i.e., it is a $k$-clustering of $X$). Note that the unsupervised clustering algorithm is fixed and should be clear from the context.
+
+Let $f$ be a mapping from $X$ to $\mathbb{R}^{d}$. We define $C^f_{X}$ the result of clustering $X$ after mapping it to a new space using $f$. In other words, $C^f_{X} = C_{f(X)}$. 
+
+The difference between two mappings $f_1$ and $f_2$ with respect to $X$ is defined by the difference between the result of clustering using these mappings. Formally,
+
+\begin{equation}
+\Delta_{X}(f_1, f_2) = \Delta_{X}(C^{f_1}_{X},  C^{f_2}_{X})
+\end{equation}
+
+
+%===================================================
+\section{Formal Problem Statement (PAC-ReCLAD)}
+%===================================================
+
+
+Let $C^*$ be the target $k$-clustering of $X$. %According to the $k$-richness property of k-means, we know that there exist a mapping $g^*$ under which the result of k-means clustering of $X$ is $C^*$. Therefore, instead of assuming a target clustering $C^*$, we can also work with its corresponding mapping $g^*$. 
+A \textit{representation learning algorithm} $A(.,.)$ takes as input a sample set $S\subset X$ and its clustering, $C^*\Big|_S$, and outputs a mapping $f$ from a set of mappings $\mathcal{F}$. 
+
+We call this learning problem ReCLAD which stands for \textit{REpresentation learner for CLustering with ADvice}. 
+
+\begin{definition}{Probably Approximately Correct Representation Learning for Clustering with Advice  (PAC-ReCLAD)}\label{PACRECLAD}
+
+Let $\mathcal{F}$ be a set of mappings from $X$ to $\mathbb{R}^d$. A representation learning algorithm $A$ is a PAC-ReCLAD learner with sample complexity $m_{\mathcal{F}}:(0,1)^2\mapsto \mathbb{N}$ with respect to $\mathcal{F}$, if for every $(\epsilon,\delta)\in (0,1)^2$, every domain set $X$ and every clustering of $X$, $C^*$, the following holds: 
+
+if $S$ is a randomly (uniformly) selected subset of $X$ of size at least $m_{\mathcal{F}}(\epsilon, \delta)$, then with probability at least $1-\delta$
+
+
+
+\begin{equation}
+\Delta_{X}(C^*,  C^{f_A}_X) \leq \inf_{f\in \mathcal{F}} \Delta_{X}(C^*,C^{f}_X) + \epsilon
+\end{equation}
+
+where $f_A = A(S, C^*\Big|_S)$, is the output of the algorithm.
+
+\end{definition}
+
+
+\begin{note} In this definition, $f_A$ is the mapping that the algorithm outputs. Using this mapping, $X$ is mapped to a new space. The result of clustering in this new space is $C^{f_A}_X$. Therefore, it is assumed that a fixed unsupervised clustering is used to cluster the data in the new space. In the next section, we will fix the $k$-means clustering for this purpose.
+\end{note}
+
+
+\begin{note}
+This can be regarded as a formal PAC framework to analyze the problem of clustering with advice. The learner is compared to the best mapping in the class $\mathcal{F}$. This means that this is an \emph{agnostic} framework.
+\end{note}
+
+\begin{note}
+In this proposal, we investigate the \emph{transductive} setup, where there is a given data set, known to the learner, that needs to be clustered. Clustering often occurs as a task over some data generating distribution (e.g., \cite{von2005towards}). The current work can be readily extended to that setting. However, in that case, we assume that the clustering algorithm gets, on top of the clustered sample, a large unclustered sample drawn form that data generating distribution.
+
+\end{note}
+
+A natural question is providing bounds on the sample complexity of PAC-ReCLAD with respect to $\mathcal{F}$. Intuitively, for richer classes of mappings, we need larger clustered samples. Therefore, we need to introduce an appropriate notion of ``capacity'' for $\mathcal{F}$ and bound the sample complexity based on it. This is addressed in the next chapter. 
+
+In the next section, we specialize the general framework of ReCLAD for the case of $k$-means clustering.
+
+
+
+
+%=================================================================
+\section{The Case of K-means Clustering (Re-KLAD)}
+%=================================================================
+
+
+In the previous section it was stated that the ReCLAD method relies on an unsupervised clustering method. In this section, we fix the $k$-means clustering algorithm in the ReCLAD framework. It means that we are looking for a representation of data under which the result of $k$-means clustering is consistent with the domain knowledge. We call this approach ReKLAD (which stands for REpresentation Learning for K-means clustering with ADvice).
+
+
+
+$k$-means belongs to the class of center-based clustering methods. In these algorithms, the goal is to find a set of ``centers'' (or prototypes), and the clusters are the Voronoi cells induced by this set of centers. The objective of such a clustering is to minimize the expected value of some monotonically increasing function of the distances of points to their cluster centers. The $k$-means clustering objective is arguably the most popular paradigm in this class. Currently, center-based clustering tools lack a vehicle for incorporating domain expertise. Domain knowledge is usually taken into account only through an ad hoc choice of input data representation. Regretfully, it might not be realistic to require the domain expert to translate sufficiently elaborate task-relevant knowledge into hand-crafted features. This makes the study of ReKLAD interesting and important.
+
+Also, $k$-means is especially interesting because it is flexible: for \emph{any} target clustering in any domain, there exists a corresponding embedding to a new space such that the solution of $k$-means in the new space is the same as target clustering\footnote{This property is sometimes called $k$-Richness}.
+
+As a result, we formulate the ReCLAD problem for the case of $k$-means clustering. In the following, we introduce the formal definitions.
+
+\subsection{Definitions and Notations}
+
+Let $f$ be a mapping from $X$ to $\mathbb{R}^{d}$, and $\mu=(\mu_1, \ldots \mu_k)$ be a vector of $k$ centers in $\mathbb{R}^d$. The clustering defined by $(f, \mu)$ is the partition over $X$ induced by the $\mu$-Voronoi partition in $\mathbb{R}^d$. Namely,
+\[C_f(\mu)=(C_1, \ldots C_k), ~\mbox{where for all $i$}, ~ \]\[C_i=\{x\in X: \|f(x)-\mu_i\|_2 \leq \|f(x)-\mu_j\|_2 ~\mbox{for all} ~ j\neq i \}\]
+
+The $k$-means cost of clustering $X$ with a set of centers $\mu=\{\mu_1,\ldots,\mu_k\}$ and with respect to a mapping $f$ is defined by
+
+\begin{equation}
+COST_{X}(f, \mu) = \frac{1}{|X|} \sum_{x \in X} \min_{\mu_i \in \mu} \|f(x)-\mu_i\|_2^2
+\end{equation}
+
+The $k$-means clustering algorithm finds the set of centers $\mu^f_{X}$ that minimize this cost\footnote{We assume that the solution to k-means clustering is unique. We will elaborate about this issue in the next sections.}. In other words,
+
+\begin{equation}
+\mu^f_{X} = \argmin_{\mu} COST_{X}(f,\mu)
+\end{equation}
+
+Also, for a partition $C$ and mapping $f$, we can define the cost of clustering as follows.
+
+\begin{equation}
+COST_{X}(f, C) = \frac{1}{|X|} \sum_{i \in [k]} \min_{\mu_j} \sum_{x \in C_i} \|f(x)-\mu_j\|_2^2
+\end{equation}
+
+
+
+The following proposition shows the ``$k$-richness'' property of k-means objective.
+
+\begin{proposition} Let $X$ be a domain set. For every $k$-clustering of $X$, $C$, and every $d\in \mathbb{N}^+$, there exist a mapping $g: X \mapsto \mathbb{R}^d$ such that $C^g_X = C$. 
+\end{proposition}
+\begin{proof} The mapping $g$ can be picked such that it collapses each cluster $C_i$ into a single point in $\mathbb{R}^n$ (and so the image of $X$ under mapping $g$ will be just $k$ single points in $\mathbb{R}^n$). The result of $k$-means clustering under such mapping will be $C$.
+\end{proof}
+
+For a mapping $f$ as above, let $C^f_{X}$ denote the $k$-means clustering of $X$ induced by $f$, namely  
+
+\begin{equation}
+C^f_{X}=C_f(\mu^f_{X})
+\end{equation}
+
+
+\subsection{PAC-ReKLAD}
+
+Now that we have the needed notations, we can formally define the PAC-ReKLAD problem. However, the definition is exactly the same as that of PAC-ReCLAD (Definition \ref{PACRECLAD}). We only need to make the use of $k$-means clustering as the unsupervised tool explicit.
+
+We avoid repeating the definition. We just note for PAC-ReKLAD is the same as PAC-ReCLAD, except that the meaning of $C^f_{X}$ is more explicit: $C^f_{X}$ is $k$-clustering induced by first mapping $X$ to a new space using $f$, and then performing \emph{k-means} clustering in the new space.
+
+Proving a bound for the sample complexity of PAC-ReKLAD is a concrete and crucial problem. In the next chapter, we address this issue.
+
+
+
+
+
+
+%======================================================================
+\chapter{Statistical Analysis of ReCLAD}
+\label{ANALYSIS}
+%======================================================================
+
+The important question that was raised in the previous chapter was that of the sample complexity: what is the size of a sample, to be clustered by the domain expert, that suffices for finding a close-to-optimal embedding (i.e., a mapping that generalizes well on the test data)?
+
+Intuitively, this sample complexity depends on the richness of the class of potential embeddings that the algorithm is choosing from. In standard supervised learning, there are well established notions of capacity of hypothesis classes (e.g., VC-dimension) that characterize the sample complexity of learning. In this chapter we will introduce relevant notions of capacity for ReCLAD.
+
+Particularly, we introduce a combinatorial parameter, a specific notion of the capacity of the class of mappings, that determines the sample complexity of ReCLAD for the case of $k$-means clustering (i.e., ReKLAD framework) . This combinatorial notion is a multivariate version of \emph{pseudo-dimension} of a class of real-valued mappings. We show that there is \emph{uniform convergence} of empirical losses to the true loss, over any class of mappings, ${\cal F}$, at a rate that is determined by the proposed dimension. 
+
+This implies that any empirical risk minimization algorithm (ERM) will successfully learn such a class from sample sizes upper bounded by those rates. 
+
+Finally, we analyze a particular natural class --the class of linear mappings from $\mathbb{R}^{d_2}$ to $\mathbb{R}^{d_1}$--  and show that roughly speaking, sample size of $O(\frac{d_1d_2}{\epsilon^2})$ is sufficient to guarantee an $\epsilon$-optimal answer.
+
+
+\section{Technical Background}
+
+Statistical convergence rates of sample clustering to the optimal clustering, with respect to some data generating probability distribution, play a central role in our analysis.
+From that perspective, most relevant to our work in this chapter are results that provide generalization bounds for $k$-means clustering. Ben-David \cite{ben2007framework} proposed the first dimension-independent generalization bound for $k$-means clustering based on compression techniques. This result was tightened in \cite{biau2008performance} through an analysis of Rademacher complexity. Also, \cite{maurer2010dimensional} investigated a more general framework, in which generalization bounds for $k$-means as well as other algorithms can be obtained. 
+
+It should be noted that these results are about the standard clustering setup (without any supervised feedback), where the data representation is fixed and known to the clustering algorithm. However, analysis of the semi-supervised clustering problem --particularly PAC-ReCLAD-- is still open.
+
+
+\section{ERM as a Representation Learner}
+\label{ERM}
+
+In order to prove an upper bound for the sample complexity of ReCLAD, we need to consider an algorithm, and prove a sample complexity bound for it. Here, we show that any ERM-type algorithm\footnote{ERM stands for Empirical Risk Minimization} can be used for the ReKLAD framework. Therefore, we will be able to prove an upper bound for the sample complexity of PAC-ReKLAD. 
+
+Let $\mathcal{F}$ be a class of mappings and $X$ be the domain set. A TERM\footnote{TERM stands for Transductive Empirical Risk Minimizer} learner for $\mathcal{F}$ takes as input a sample $S\subset X$ and its clustering $Y$ and outputs:
+
+\begin{equation}
+A^{TERM}(S, Y) = \argmin_{f\in \mathcal{F}} \Delta_S(C^{f}_{X}\Big|_S, Y)
+\end{equation}
+
+Note that we call it transductive, because it is implicitly assumed that it has access to the unlabeled dataset (i.e., $X$). A TERM algorithm goes over all mappings in $\mathcal{F}$ and selects the mapping which is the most consistent mapping with the given clustering: the mapping under which if we perform k-means clustering of $X$, the sample-based $\Delta$-difference between the result and $Y$ is minimized. 
+
+%There are two main modules in TERM. The first one tests if the solution is unique for any $f\in \mathcal{F}$. In the transductive setting, it is assumed that the learner has access to the distribution $\mathcal{D}$\footnote{As described in Remark 1, transductive setting natural in practical scenarios. Moreover, having access to a large unclustered dataset can help testing the uniqueness assumption.}. Therefore, testing whether the solution is unique or not is possible by testing all possible solutions (i.e., centers) and checking whether $\eta$-uniqueness holds.
+
+%The second module finds the best mapping based on a supervised criterion: the best mapping is the one that matches with the given clustering. For this part we need to prove that it will minimize not only the empirical loss function, but also the true loss with respect to the distribution and the true mapping. In the next section, we formalize this idea. Note that the computational complexity of this algorithm is not the focus of this paper. 
+
+Intuitively, this algorithm will work well when the empirical $\Delta$-difference and the true $\Delta$-difference of the mappings in the class are close to each other. In this case, by minimizing the empirical difference, the algorithm will automatically minimize the true difference as well. In order to formalize this idea, we define the notion of ``representativeness'' of a sample.
+
+
+%In the previous section we introduced TERM algorithm and observed that it minimizes the empirical loss function. In this section, we formally show that if the algorithm is fed with a sample that is ``representative'', then it will work satisfactorily.
+
+\begin{definition} {($\epsilon$-Representative Sample)} Let $\mathcal{F}$ be a class of mappings from $X$ to $\mathbb{R}^d$. A sample $S$ is $\epsilon$-representative with respect to $\mathcal{F}$, $X$ and the clustering $C^*$, if for every $f\in \mathcal{F}$ the following holds
+
+\begin{equation}
+|\Delta_{X}(C^*, C^{f}_X) - \Delta_{S}(C^*, C^{f}_X))| \leq \epsilon
+\end{equation}
+
+
+\end{definition}
+
+%Let $C^*$ be the true $k$-clustering of $X$. According to the $k$-richness property of k-means, we know that there exist a mapping $g^*$ under which the result of k-means clustering of $X$ is $C^*$. Therefore, instead of assuming a true clustering $C^*$, we can also work with its corresponding mapping $g^*$. 
+The following theorem shows that for the TERM algorithm to work, it is sufficient to supply it with a representative sample. 
+
+\begin{theorem} \label{ERMT}{(Sufficiency of Uniform Convergence)} Let $\mathcal{F}$ be a set of mappings from $X$ to $\mathbb{R}^d$. If $S$ is an $\frac{\epsilon}{2}$-representative sample with respect to $X$, $\mathcal{F}$ and $C^*$ then 
+
+\begin{equation}
+\Delta_X(C^*, C^{\hat{f}}_X) \leq \Delta_X(C^*, C^{f^*}_X) + \epsilon
+\end{equation}
+
+where $f^* = \argmin_{f\in \mathcal{F}} \Delta_X(C^*, C^f_X)$ and $\hat{f} = A^{TERM}(S,C^*\Big|_S)$.
+
+\end{theorem}
+
+\begin{proof}
+
+Using $\frac{\epsilon}{2}$-representativeness of $S$ and the fact that $\hat{f}$ is the empirical minimizer of the loss function, we have
+
+
+
+\begin{equation}
+\Delta_X(C^*, C^{\hat{f}}_X) \leq \Delta_S(C^*, C^{\hat{f}}_X) + \frac{\epsilon}{2}
+\end{equation}
+
+
+\begin{equation}
+\leq \Delta_S(C^*, C^{f^*}_X) + \frac{\epsilon}{2} 
+\end{equation}
+
+
+\begin{equation}
+\leq \Delta_X(C^*, C^{f^*}_X) + \frac{\epsilon}{2}  + \frac{\epsilon}{2}
+\end{equation}
+
+\begin{equation}
+\leq \Delta_X(C^*, C^{f^*}_X) + \epsilon
+\end{equation}
+
+
+\end{proof}
+
+
+Therefore, we just need to provide an upper bound for the sample complexity of uniform convergence: ``how many instances do we need to make sure that with high probability our sample is $\epsilon$-representative?''
+
+
+
+
+\section{Classes of Mappings with a Uniqueness Property}
+\label{UNIQUE}
+
+In general, the solution to $k$-means clustering may not be unique. Therefore, the learner may end up with finding a mapping that corresponds to multiple different clusterings. This is not desirable, because in this case, the output of the learner will not be interpretable. Therefore, it is reasonable to choose the class of potential mappings in a way that it includes only the mappings under which the solution is unique. 
+
+In order to make this idea concrete, we need to define an appropriate notion of uniqueness. We use a notion similar to the one introduced by \cite{balcan2009approximate} with a slight modification\footnote{Our notion is additive in both parameters rather than multiplicative}.
+
+
+\begin{definition} {($(\eta, \epsilon)$-Uniqueness)} We say that k-means clustering for domain $X$ under mapping $f:\mathcal{X}\mapsto \mathbb{R}^d$ has a $(\eta, \epsilon)$-unique solution, if every $\eta$-optimal solution of the $k$-means cost is $\epsilon$-close to the optimal solution. Formally, the solution is $(\eta, \epsilon)$-unique if for every partition $P$ that satisfies
+
+\begin{equation}
+COST_{X}(f, P) < COST_{X}(f, C^{f}_X) + \eta
+\end{equation}
+
+would also satisfy
+
+\begin{equation}
+\Delta_{X}(C^{f}_X, P ) < \epsilon
+\end{equation}
+
+In the degenerate case where the optimal solution to k-means is not unique itself (and so $C^{f}_{X}$ is not well-defined), we say that the solution is not $(\eta, \epsilon)$-unique.
+
+\end{definition}
+
+It can be noted that the definition of $(\eta, \epsilon)$-uniqueness not only requires the optimal solution to $k$-means clustering to be unique, but also all the ``near-optimal'' minimizers of the $k$-means clustering cost should be ``similar''. This is a natural strengthening of the uniqueness condition, to guard against cases where there are $\eta_0$-optimizers of the cost function (for arbitrarily small $\eta_0$) with totally different solutions. 
+
+
+Now that we have a definition for uniqueness, we can define the set of mappings for $X$ under which the solution is unique. We say that a class of mappings $F$ has $(\eta, \epsilon)$-\textit{uniqueness property} with respect to $X$, if every mapping in $F$ has $(\eta, \epsilon)$-uniqueness property over $X$.
+
+
+Note that given an arbitrary class of mappings $F$, we can find a subset of it that satisfies $(\eta, \epsilon)$-uniqueness property over $X$. Also, as argued above, this subset is the useful subset to work with. Therefore, in the rest of this chapter, we investigate learning for classes with $(\eta, \epsilon)$-uniqueness property. In the next section, we prove uniform convergence results for such classes.
+
+
+%\begin{equation}
+%\Delta^{\alpha, \beta}_{\mathcal{D}}(g,f) = \left\{
+%	\begin{array}{ll}
+%		\Delta^{\alpha, \beta}_{\mathcal{D}}(g,f)  & \mbox{if } Unique (\mathcal{D},g, \alpha, \beta) \land Unique(\mathcal{D},f, \alpha, \beta)  \\
+%		1 & \mbox{if } o.w.
+%	\end{array}
+%\right.
+%\end{equation}
+
+
+%Assume $\epsilon$ is the accuracy parameter in the PAC setting. In the above, we argued that it is reasonable to require the learner to output a mapping under which the solution is "unique". This can be interpreted as outputting a mapping under which all solutions are $\epsilon$-similar in terms of the partitioning that they produce. Therefore, it is reasonable to require the learner to output a $(\frac{\epsilon}{\beta}, \beta)$-unique solution for some $\beta$. A relaxed version would be a $(\frac{\epsilon}{2\beta}, \beta)$-unique solution.
+
+
+%\begin{definition}{PAC Supervised Representation Learner for k-Means Under UniQueness(PAC-SRLQ)}
+%
+%Let $\mathcal{F}$ be a set of mappings from $\mathcal{X}$ to $\mathcal{Z}$. $A$ is a PAC-SRLQ with sample complexity $m_{\mathcal{F}}:(0,1)^2\mapsto \mathbb{N}$ with respect to $\mathcal{F}$ and $\eta$, if for every $(\epsilon,\delta)\in (0,1)^2$, every distribution $\mathcal{D}$ on $\mathcal{X}$ and every mapping $g^*:\mathcal{X}\mapsto\mathcal{Z}$ the following holds:
+%
+%if we draw an iid sample $S\sim \mathcal{D}^{m_{\mathcal{F}}(\epsilon, \delta)}$, then with probability at least $1-\delta$, 
+%
+%
+%
+%\begin{equation}
+%\Delta(g^*,  A(S, C^{g^*}_{\mathcal{D}}(S)) < \inf_{f\in \mathcal{F}^{\eta}_{\mathcal{D}}} \Delta(g^*,f) + \epsilon
+%\end{equation}
+%
+%\centering and \\k-means clustering has $\eta$-unique solution under the mapping $A(S, C^{g^*}_{S}(S))$.
+%
+%
+%
+%
+%
+%\end{definition}
+%
+%
+%\begin{remark}
+%In the above definition, the distribution $\mathcal{D}$ is unknown to the learner. However, there is a valid ``transductive'' scenario where the final goal is to cluster a particular (possibly very large) sample. In other words, the learner has access to unclustered test data (or essentially $\mathcal{D}$). This situation is common in practice, and the problem is still interesting to analyze, because the learner does not have access to the true mapping $g^*$.
+
+
+ %In this case, determining whether a mapping has $(\alpha, \beta)$-unique solution on the distribution is possible. However, if we assume that the distribution is unknown, it will be hard to check this property based on finite sample. The reason is that the solution might be $(\alpha, \beta)$-unique but not $(\alpha-\epsilon_0, \beta)$-unique for an infinitesimal $\epsilon_0$. In this case, it makes sense to compare the output of the algorithm with $\inf_{f\in \mathcal{F}} \Delta^{\frac{\epsilon}{\beta}, \beta}_{\mathcal{D}}(g^*,f)$ to be able to provide finite sample bounds.
+
+%\end{remark}
+
+
+
+
+
+
+\section{Uniform Convergence Results}
+
+In Section \ref{ERM}, we defined the notion of $\epsilon$-representative samples. Also, we proved that if a TERM algorithm is fed with such a representative sample, it will work satisfactorily. The most technical part of the proof is then about the question ``how large should be the sample in order to make sure that with high probability it is actually a representative sample?'' 
+
+
+In order to formalize this notion, let $\mathcal{F}$ be a set of mappings from a domain $X$ to $(0,1)^{n}$\footnote{In the analysis, for simplicity, we will assume that the set of mappings is a function to the bounded space ${(0,1)}^{n}$ wherever needed}. Define the sample complexity of uniform convergence, $m^{UC}_{\mathcal{F}}(\epsilon, \delta)$, as the minimum number $m$ such that for every fixed partition $C^*$, if $S$ is a randomly (uniformly) selected subset of $X$ with size $m$, then with probability at least $1-\delta$, for all $f\in \mathcal{F}$ we have
+
+\begin{equation}
+|\Delta_{X}(C^{*}, C^{f}_{X}) - \Delta_{S}(C^{*}, C^{f}_{X})| \leq \epsilon
+\end{equation}
+
+The technical part of this chapter is devoted to provide an upper bound for this sample complexity.
+
+
+\subsection{Preliminaries}
+
+\begin{definition} {($\epsilon$-cover and covering number)} Let $\mathcal{F}$ be a set of mappings from $X$ to $(0,1)^{n}$. A subset $\hat{F}\subset \mathcal{F}$ is called an $\epsilon$-cover for $\mathcal{F}$ with respect to the metric $d(.,.)$ if for every $f\in \mathcal{F}$ there exists $\hat{f}\in \hat{F}$ such that $d(f, \hat{f}) \leq \epsilon$. The covering number, $\mathcal{N}(\mathcal{F}, d, \epsilon)$ is the size of the smallest $\epsilon$-cover of $\mathcal{F}$ with respect to $d$. 
+
+\end{definition}
+
+In the above definition, we did not specify the metric $d$. In our analysis, we are interested in the $L_1$ distance with respect to $X$, namely:
+
+%the sample-based $l_\infty$ metric. Let $S\subset X$ be a sample. Then the sample-based $l_\infty$ is defined as
+
+%\begin{equation}
+%d_{\infty}^{S} (f_1, f_2) = \max_{x\in S}\|f_1(x) - f_2(x)\|_2
+%\end{equation}
+
+
+
+\begin{equation}
+d_{L_1}^{X} (f_1, f_2) = \frac{1}{|X|}\sum_{x\in X} \|f_1(x) - f_2(x)\|_2
+\end{equation}
+
+Note that the mappings we consider are not real-valued functions, but their output is an $n$-dimensional vector. This is in contrast to the usual analysis used for learning real-valued functions. If $f_1$ and $f_2$ are real-valued, then $L_1$ distance is defined by
+
+\begin{equation}
+d_{L_1}^{X} (f_1, f_2) = \frac{1}{|X|}\sum_{x\in X} |f_1(x) - f_2(x)|
+\end{equation}
+
+
+We will prove sample complexity bounds for our problem based on the $L_1$-covering number of the set of mappings. However, it will be beneficial to have a bound based on some notion of capacity, similar to VC-dimension, as well. This will help in better understanding and easier analysis of sample complexity of different classes. While VC-dimension is defined for binary valued functions, we need a similar notion for functions with outputs in $\mathbb{R}^n$. For real-valued functions, we have such notion, called pseudo-dimension (\cite{pollard1984convergence}).
+
+\begin{definition} (Pseudo-Dimension)
+Let $\mathcal{F}$ be a set of functions from $X$ to $\mathbb{R}$. Let $S=\{x_1,x_2,\ldots,x_m\}$ be a subset of $X$. Then $S$ is pseudo-shattered by $\mathcal{F}$ if there are real numbers $r_1,r_2,\ldots,r_m$ such that for every $b\in \{0,1\}^m$, there is a function $f_b\in \mathcal{F}$ with $sgn(f_b(x_i)-r_i)=b_i$ for $i\in[m]$. Pseudo dimension of $\mathcal{F}$, called $Pdim(\mathcal{F})$, is the size of the largest shattered set.
+
+\end{definition}
+
+It can be shown (e.g., Theorem 18.4. in \cite{anthony2009neural}) that for a real-valued class $F$, if $Pdim(F)\leq q$ then $\log \mathcal{N}(F, d_{L_1}^X,\epsilon) = \mathcal{O}(q)$ where $\mathcal{O}()$ hides logarithmic factors of $\frac{1}{\epsilon}$. In the next sections, we will generalize this notion to $\mathbb{R}^n$-valued functions.
+
+
+
+
+
+\subsection{Reduction to Binary Hypothesis Classes}
+
+Let $f_1,f_2\in\mathcal{F}$ be two mappings and $\sigma$ be a permutation over $[k]$. Define the binary-valued function $h_{\sigma}^{f_1,f_2}(.)$ as follows
+
+\begin{equation}
+h_{\sigma}^{f_1,f_2}(x) = \left\{
+	\begin{array}{ll}
+		1 & x\in \cup_{i=1}^{k} (C^{f_1}_i \Delta C^{f_2}_{\sigma(i)}) \\
+		0 & \mbox{otherwise}
+	\end{array}
+\right.
+\end{equation}
+
+Let $H^{\mathcal{F}}_\sigma$ be the set of all such functions with respect to $\mathcal{F}$ and $\sigma$:
+
+\begin{equation}
+H^{\mathcal{F}}_\sigma = \{ h_{\sigma}^{f_1,f_2}(.):f_1,f_2\in \mathcal{F} \}
+\end{equation}
+
+Finally, let $H^{\mathcal{F}}$ be the union of all $H^{\mathcal{F}}_\sigma$ over all choices of $\sigma$. Formally, if $\pi$ is the set of all permutations over $[k]$, then
+
+\begin{equation}
+H^{\mathcal{F}} = \cup_{\sigma \in \pi} H^{\mathcal{F}}_\sigma
+\end{equation}
+
+For a set $S$, and a binary function $h(.)$, let $h(S) = \frac{1}{|S|}\sum_{x\in S} h(x)$. We now show that a uniform convergence result with respect to $H^{\mathcal{F}}$ is sufficient to have uniform convergence for the $\Delta$-difference function. Therefore, we will be able to investigate conditions for uniform convergence of $H^{\mathcal{F}}$ rather than the $\Delta$-difference function.
+
+ 
+\begin{theorem}
+Let $X$ be a domain set, $\mathcal{F}$ be a set of mappings, and $H^{\mathcal{F}}$ be defined as above. If $S\subset X$ is such that 
+
+\begin{equation}
+\forall h \in H^{\mathcal{F}}, |h(S) - h(X)| \leq \epsilon
+\end{equation}
+
+then $S$ will be $\epsilon$-representative with respect to $\mathcal{F}$, i.e., for all $f_1,f_2 \in \mathcal{F}$ we will have
+\begin{equation}
+|\Delta_{X}(C^{f_1}_X, C^{f_2}_X) - \Delta_{S}(C^{f_1}_X, C^{f_2}_X)| \leq \epsilon
+\end{equation}
+
+
+\end{theorem}
+
+
+\begin{proof}
+
+\begin{equation}
+|\Delta_S(C^{f_1}_X,C^{f_2}_X) - \Delta_X(C^{f_1}_X,C^{f_2}_X)|
+\end{equation}
+
+\begin{equation}
+=\left|\left(\min_\sigma \frac{1}{|S|} \sum_{x\in S} h^{f_1,f_2}_{\sigma}\right) - \left(\min_\sigma \frac{1}{|X|} \sum_{x\in X} h^{f_1,f_2}_{\sigma}\right)\right|
+\end{equation}
+
+\begin{equation}
+\leq \left| \max_\sigma \left(\frac{1}{|S|} \sum_{x\in S} h^{f_1,f_2}_{\sigma} - \frac{1}{|X|} \sum_{x\in X} h^{f_1,f_2}_{\sigma}\right)\right|
+\end{equation}
+
+\begin{equation}
+\leq \left| \max_\sigma \left( h^{f_1,f_2}_{\sigma}(S) -  h^{f_1,f_2}_{\sigma}(X)  \right)\right| \leq \epsilon
+\end{equation}
+
+
+\end{proof}
+
+The fact that  $H^{\mathcal{F}}$ is a class of binary-valued functions enables us to provide sample complexity bounds based on VC-dimension of this class. However, providing bounds based on VC-Dim$(H^{\mathcal{F}})$ is not sufficient, in the sense that it is not convenient to work with the class $H^{\mathcal{F}}$. Instead, it will be nice if we can prove bounds directly based on the capacity of the class of mappings, $\mathcal{F}$. In the next section, we address this issue.
+
+\subsection{$L_1$-Covering Number and Uniform Convergence}
+
+The classes introduced in the previous section, $H^{\mathcal{F}}$ and $H^{\mathcal{F}}_\sigma$, are binary hypothesis classes. Also, we have shown that proving a uniform convergence result for $H^{\mathcal{F}}$ is sufficient for our purpose. In this section, we show that a bound on the $L_1$ covering number of $\mathcal{F}$ is sufficient to prove uniform convergence for $H^{\mathcal{F}}$.
+
+In Section \ref{UNIQUE}, we argued that we only care about the classes that have $(\eta, \epsilon)$-uniqueness property. In the rest of this section, assume that $\mathcal{F}$ is a class of mappings from $X$ to $(0,1)^n$ that satisfies $(\eta, \epsilon)$-uniqueness property.
+
+\begin{lemma}
+\label{lemma1}
+Let $f_1,f_2\in \mathcal{F}$. If $d_{L_1}(f_1,f_2) < \frac{\eta}{12}$ then $\Delta_X(f_1, f_2) < 2\epsilon$
+\end{lemma}
+
+We leave the proof of this lemma for the appendix, and present the next lemma.
+
+\begin{lemma}
+\label{COVERLEMMA}
+Let $H^{\mathcal{F}}$ be defined as in the previous section. Then,
+
+\begin{equation}
+\mathcal{N}(H^{\mathcal{F}}, d_{L_1}^{X}, 2\epsilon) \leq k!\mathcal{N}(\mathcal{F}, d_{L_1}^{X}, \frac{\eta}{12})
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Let $\hat{\mathcal{F}}$ be the $\frac{\eta}{12}$-cover corresponding to the covering number $\mathcal{N}(\mathcal{F}, d_{L_1}^{X}, \frac{\eta}{12})$. Based on the previous lemma, $H^{\hat{\mathcal{F}}}_\sigma$ is a $2\epsilon$-cover for $H^{{\mathcal{F}}}_\sigma$. But we have only $k!$ permutations of $[k]$, therefore, the covering number for $H^{\hat{\mathcal{F}}}$ is at most $k!$ times larger than $H^{\hat{\mathcal{F}}}_\sigma$. This proves the result.
+\end{proof}
+
+Basically, this means that if we have a small $L_1$ covering number for the mappings, we will have the uniform convergence result we were looking for. The following theorem proves this result.
+
+\begin{theorem} Let $\mathcal{F}$ be a set of mappings with $(\eta, \epsilon)$-uniqueness property. Then there for some constant $\alpha$ we have
+
+\begin{equation}
+m^{UC}_{\mathcal{F}}(\epsilon, \delta) \leq O(\frac{ \log k! + \log \mathcal{N}(\mathcal{F}, d_{L_1}^{X}, \frac{\eta}{\alpha})+\log(\frac{1}{\delta})}{\epsilon^2})
+\end{equation}
+
+\end{theorem}
+
+\begin{proof}
+Following the previous lemma, if we have a small $L_1$-covering number for $\mathcal{F}$, we will also have a small covering number for $H^{\mathcal{F}}$ as well. But based on standard uniform convergence theory, if a hypothesis class has small covering number, then it has uniform convergence property. More precisely, (e.g., Theorem 17.1 in \cite{anthony2009neural}) we have:
+\begin{equation}
+m^{UC}_{H^{\mathcal{F}}}(\epsilon_0, \delta) \leq O(\frac{ \log \mathcal{N}(H^{\mathcal{F}}, d_{L_1}^{X}, \frac{\epsilon_0}{16}) +\log(\frac{1}{\delta})}{\epsilon_0^2})
+\end{equation}
+
+
+Applying Lemma \ref{COVERLEMMA} to the above proves the result.
+\end{proof}
+
+%\begin{corollary} Let $\mathcal{F}$ be a class of $(\eta_1, \eta_2)$-unique mappings. Then for some constant $\alpha$, and for $\eta_2 \leq \epsilon \leq \eta_1$ we have
+%
+%\begin{equation}
+%m^{UC}_{\mathcal{F}^{\eta_1, \eta_2}}(\epsilon, \delta) \leq O(\frac{ \log k! + \log \mathcal{N}(\mathcal{F}^{\eta_1, \eta_2}, d_{L_2}^{X}, \frac{\epsilon}{\alpha})+\log(\frac{1}{\delta})}{\epsilon^2})
+%\end{equation}
+%
+%\end{corollary}
+
+
+
+
+
+\subsection{Bounding $L_1$-Covering Number }
+
+In the previous section, we proved if the $L_1$-covering number of the class of mappings is bounded, then we will have uniform convergence. However, it is desirable to have a bound with respect to a combinatorial dimension of the class (rather than the covering number). Therefore, we will generalize the notion of pseudo-dimension for the class of mappings that take value in $\mathbb{R}^n$.
+
+Let $\mathcal{F}$ be a set of mappings form $X$ to $\mathbb{R}^n$. For every mapping $f\in \mathcal{F}$, define real-valued functions $f_1,\ldots,f_n$ such that $f(x)= (f_1(x),\ldots,f_n(x))$. Now let $F_i = \{ f_i: f\in F\}$. This means that $F_1, F_2,\ldots,F_n$ are classes of real-valued functions. Now we define pseudo-dimension of $\mathcal{F}$ as follow.
+
+\begin{equation}
+Pdim(\mathcal{F}) = n \max_{i\in[n]} Pdim(F_i)
+\end{equation}
+
+\begin{proposition} Let $\mathcal{F}$ be a set of mappings form $X$ to $\mathbb{R}^n$. If $Pdim(F)\leq q$ then $$\log \mathcal{N}(F, d_{L_1}^X,\epsilon) = \mathcal{O}(q)$$ where $\mathcal{O}()$ hides logarithmic factors.
+
+\end{proposition}
+
+\begin{proof} The result follows from the corresponding result for bounding covering number of real-valued functions based on pseudo-dimension mentioned in the preliminaries section. The reason is that we can create a cover by composition of the $\frac{\epsilon}{n}$-covers of all $F_i$. However, this will at most introduce a factor of $n$ in the logarithm of the covering number.
+\end{proof}
+
+
+Therefore, we can rewrite the result of the previous section in terms of pseudo-dimension.
+
+\begin{theorem} 
+\label{UCSAMPLET}
+Let $\mathcal{F}$ be a class of mappings with $(\eta, \epsilon)$-uniqueness property. Then 
+
+\begin{equation}
+m^{UC}_{\mathcal{F}}(\epsilon, \delta) \leq \mathcal{O}(\frac{ k + Pdim(\mathcal{F})+\log(\frac{1}{\delta})}{\epsilon^2})
+\end{equation}
+
+where $\mathcal{O}()$ hides logarithmic factors of $k$ and $\frac{1}{\eta}$.
+
+
+\end{theorem}
+
+
+\section{Sample Complexity of PAC-ReKLAD}
+
+In this section, we provide the main result of this chapter. In Section \ref{ERM} we had showed that uniform convergence is sufficient for a TERM algorithm to work. Also, in the previous section, we proved a bound for the sample complexity of uniform convergence. The following theorem, which is the main technical result of this chapter, combines these two and provides a sample complexity upper bound for PAC-ReKLAD framework.
+
+
+\begin{theorem}{\bf(Sample Complexity of ReKLAD)}
+
+Let $\mathcal{F}$ be a class of $(\eta, \epsilon)$-unique mappings. Then the sample complexity of representation learning for $k$-means clustering (ReKLAD) with respect to $\mathcal{F}$ is upper bounded by
+
+\begin{equation}
+m_{\mathcal{F}}(\epsilon, \delta) \leq \mathcal{O}(\frac{ k + Pdim(\mathcal{F})+\log(\frac{1}{\delta})}{\epsilon^2})
+\end{equation}
+
+where $\mathcal{O}$ hides logarithmic factors of $k$ and $\frac{1}{\eta}$.
+
+\end{theorem}
+
+The proof is done by combining Theorems \ref{ERMT} and \ref{UCSAMPLET}. 
+
+%\begin{remark} Note that the condition $2\eta_2 \leq \epsilon \leq 2\eta_1$ is natural. To see this, assume that the learner is required to output an $\epsilon$-accurate answer. However, if $\eta_2$ is much larger than $\epsilon$, then the class of mappings includes non-unique solutions
+%\end{remark}
+
+The following result shows an upper bound for the sample complexity of learning linear mappings (or equivalently, Mahalanobis metrics).
+
+\begin{corollary} Let $\mathcal{F}$ be a set of $(\eta,\epsilon)$-unique \emph{linear} mappings from $\mathbb{R}^{d_1}$ to $\mathbb{R}^{d_2}$. Then we have
+
+\begin{equation}
+m_{\mathcal{F}}(\epsilon, \delta) \leq \mathcal{O}(\frac{ k + d_1d_2+\log(\frac{1}{\delta})}{\epsilon^2})
+\end{equation}
+
+\end{corollary}
+
+\begin{proof}
+It is a standard result that the pseudo-dimension of a vector space of real-valued functions is just the dimensionality of the space (in our case $d_1$) (e.g., Theorem 11.4 in \cite{anthony2009neural}). Also, based on our definition of $Pdim$ for $\mathbb{R}^{d_2}$-valued functions, it should scale by a factor of $d_2$.
+\end{proof}
+
+
+
+
+%======================================================================
+\chapter{Conclusions and Future Plans}
+\label{CONCLUSION}
+%======================================================================
+
+In this proposal we introduced the problem of clustering with advice (CLAD) and provided a formal statistical framework for analyzing such framework. In particular, we modeled CLAD as a representation learning problem, called ReCLAD (i.e., representation learning for CLAD).
+
+In ReCLAD, the learner---unaware of the target clustering of the domain---is given a clustering of a small sample set. The learner's task is then finding a mapping (among a class of mappings) under which the result of clustering of the domain is as close as possible to the true clustering. For the special case of $k$-means clustering, this framework was called ReKLAD.
+
+In particular, the notion of PAC-ReCLAD was introduced in Chapter \ref{METHOD}, specifying formally our expectations from a semi-supervised clustering algorithm. Then, an important question was raised: what is the sample complexity of PAC-ReCLAD?
+
+In Chapter \ref{ANALYSIS}, we provided the results on the sample complexity of PAC-ReKLAD. More specifically, a notion of \textit{vector-valued pseudo-dimension} for the class of mappings was defined, and the sample complexity was upper bounded based on it. This means that for the classes with higher such dimension, more clustered samples are required. Furthermore, it was proved that any ERM-type algorithm that has access to such a sample will work satisfactorily
+
+In order to prove this result, a notion of uniform convergence was defined, and it was shown that the rate of convergence depends on the pseudo-dimension of the class of mappings. This was in turn proved using a bound on the covering number of the set of mappings.
+
+
+%Note that in the analysis, the notion of $(\eta, \epsilon)$-uniqueness (similar to that of \cite{balcan2009approximate}) was used and it was argued that it is reasonable to require the learner to output a mapping under which the solution is ``unique'' (because otherwise the output of k-means clustering would not be interpretable). Therefore, in the analysis, we assumed that the class of potential mappings has the $(\eta, \epsilon)$-uniqueness property.
+
+\section{Future Research Directions}
+
+Although we have had  promising results, lots of open questions remain to be answered. We plan to address these issues in our future research.
+
+\begin{itemize}
+
+
+
+
+\item In our framework, we assumed that the number of clusters is given and fixed for both the main task (i.e., clustering of the whole domain set) and the clustering of the given sample. However, it is conceivable that the domain expert would partition the small sample into a fewer number of clusters. Therefore, it is important to ``learn'' how to pick the right number of clusters as well.
+
+\item In our model, we \emph{indexed} clustering methods by a set of mappings. For this reason, we fixed a \emph{rich} clustering algorithm (i.e., k-means clustering) and searched for the right mapping. However, a more direct way is to index clustering algorithms by a parametrized family of objective functions. The supervised task is then to find those parameters.
+
+\item The choice of $k$-means clustering was rather arbitrary, except that it is \emph{rich}. Therefore, it will be useful to extend the results of PAC-ReKLAD to other clustering algorithms (i.e., considering the general PAC-ReCLAD framework).
+
+
+
+\item It can be noted that we did not analyze the computational complexity of the proposed algorithms for PAC-ReKLAD. In fact, the problem is NP-hard, as the standard $k$-means clustering is hard even without learning the representation. However, it is important to provide computationally efficient algorithms. This can be done either by picking other clustering algorithms or by exploiting the ``niceness'' of data-generating distribution (e.g., a similar notion of uniqueness proposed by \cite{balcan2009approximate} makes the complexity of $k$-means clustering algorithm polynomial.)
+
+\item There are other supervision protocols that were discussed in Chapter \ref{RLW}. In particular, in many cases the supervised feedback is in the form of pairwise constraints. This is in contrast to CLAD framework where the domain expert gives the clustering of a random sample. Therefore, it is important to study the connection between these two scenarios, and possibly extend our results to the other case.
+
+\item Another supervision protocol which has not been studied yet is the \emph{comparison-based} clustering where the domain expert is asked to compare two given clusterings and should select one  that is better. This can be more intuitive for the expert in many cases.
+
+\item In CLAD framework, we assumed that the clustered sample is picked randomly. However, we may also consider an \textit{active} setting, where the learner chooses this sample set gradually.
+
+
+\item One other observation is that representation learning can be regarded as a special case of metric learning; because for every mapping, we can define a distance function that computes the distance in the mapped space. In this light, we can make the problem more general by requiring the learner to choose a distance function rather than a mapping. This is a more challenging problem and still open.
+
+
+\item In this proposal, we used supervision as a tool to capture domain knowledge. However, in addition to information-theoretic benefits of supervised feedback, there can be computational gains as well. For example, $k$-means clustering is NP-hard. However, if we have access to an oracle (i.e., domain expert), we may be able to find the solution using a few queries. This line of research---which is parallel to what we studied in this proposal---is also a totally new and potentially fruitful research direction.
+
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+%=============================================================================
+
+\appendix
+
+% Add a title page before the appendices and a line in the Table of Contents
+\chapter{Proof of Lemma \ref{lemma1}}
+%\addcontentsline{toc}{chapter}{APPENDICES}
+
+Let $\mathcal{F}:X\mapsto (0,1)^n$ be a set of mappings that have $(\eta, \epsilon)$-uniqueness property. Let $f_1,f_2\in \mathcal{F}$ and $d_{L_1}(f_1,f_2) < \frac{\eta}{12}$. We need to prove that $\Delta_X(f_1, f_2) < 2\epsilon$. In order to prove this, note that due to triangular inequality, we have
+
+\begin{multline}
+\Delta_X(f_1, f_2) = \Delta_X(C^{f_1}(\mu^{f_1}), C^{f_2}(\mu^{f_2})) \\
+\leq \Delta_X(C^{f_1}(\mu^{f_1}), C^{f_1}(\mu^{f_2})) + \Delta_X(C^{f_1}(\mu^{f_2}), C^{f_2}(\mu^{f_2}))
+\end{multline}
+
+
+Therefore, it will be sufficient to show that each of the $\Delta$-terms above is smaller than $\epsilon$. We start by proving a useful lemma.
+
+\begin{lemma}\label{lemma3}
+Let $f_1,f_2\in \mathcal{F}$ and $d_{L_1}(f_1,f_2) < \frac{\eta}{6}$. Let $\mu$ be an arbitrary set of $k$ centers in $(0,1)^n$. Then
+
+$$|COST_X(f_1, \mu) - COST_X(f_2, \mu)| < \frac{\eta}{2}$$
+\end{lemma}
+
+\begin{proof}
+
+
+\begin{multline}
+|COST_X(f_1, \mu) - COST_X(f_2, \mu)|\\
+= \Bigg|\left(\frac{1}{|X|} \sum_{x\in X} \min_{\mu_j\in\mu}\| f_1(x)-\mu_j  \|^2\right)  
+ - \left(\frac{1}{|X|}\sum_{x\in X} \min_{\mu_j\in\mu}\| f_2(x)-\mu_j  \|^2 \right)\Bigg| 
+\end{multline}
+
+
+\begin{equation}
+ \leq \frac{1}{|X|} \sum_{x\in X} \max_{\mu_j\in\mu} \Big|  \| f_1(x)-\mu_j  \|^2- \| f_2(x)-\mu_j  \|^2  \Big|
+\end{equation}
+
+
+\begin{equation}
+ = \frac{1}{|X|} \sum_{x\in X} \max_{\mu_j\in\mu} \Big|  
+ \|f_1(x)\|^2 - \|f_2(x)\|^2 - 2 <\mu_j, f_1-f_2>
+   \Big|
+\end{equation}
+
+\begin{equation}
+ = \frac{1}{|X|} \sum_{x\in X} \max_{\mu_j\in\mu} \Big|  
+ <f_1 - f_2, f_1 + f_2 - 2 \mu_j>
+   \Big|
+\end{equation}
+
+
+\begin{equation}
+ \leq \frac{3}{|X|} \sum_{x\in X} \| f_1 - f_2\| \leq \frac{3\eta}{6} \leq \frac{\eta}{2}
+\end{equation}
+
+
+
+
+\end{proof}
+
+Now we are ready to prove that the first $\Delta$-term is smaller than $\epsilon$, i.e.,  $\Delta_X(C^{f_1}(\mu^{f_1}), C^{f_1}(\mu^{f_2})) < \epsilon$. But to do so, we only need to show that $COST_X(f_1, \mu^{f_2}) - COST_X(f_1, \mu^{f_1}) < \eta$; because in that case, due to $(\eta,\epsilon)$-uniqueness property of $f_1$, the result will follow. Now, using Lemma \ref{lemma3}, we have
+
+\begin{equation}
+COST_X(f_1, \mu^{f_2}) - COST_X(f_1, \mu^{f_1})
+\end{equation}
+
+\begin{equation}
+\leq \left( COST_X(f_2, \mu^{f_2}) + \frac{\eta}{2}\right) - COST_X(f_1, \mu^{f_1})
+\end{equation}
+
+\begin{equation}
+=  \min_{\mu}(COST_X(f_2, \mu)) - \min_{\mu}(COST_X(f_1, \mu)) + \frac{\eta}{2}
+\end{equation}
+
+\begin{equation}
+\leq  \max_{\mu}\left(COST_X(f_2, \mu) - COST_X(f_1, \mu)\right) + \frac{\eta}{2}
+\end{equation}
+
+\begin{equation}
+\leq \frac{\eta}{2}  + \frac{\eta}{2} \leq \eta
+\end{equation}
+
+where in the first and the last line we used Lemma 3. 
+
+
+Finally, we need to prove the second $\Delta$-inequality, i.e., $\Delta_X(C^{f_1}(\mu^{f_2}), C^{f_2}(\mu^{f_2})) \leq \epsilon$. Assume contrary. But based on $(\eta,\epsilon)$-uniqueness property of $f_2$, we conclude that $COST_X(f_2, C^{f_1}(\mu^{f_2})) - COST_X(f_2, C^{f_2}(\mu^{f_2})) \geq \eta$. In the following, we prove that this cannot be true, and hence a contradiction.
+
+Let $m_x = \argmin_{\mu_0\in \mu^{f_2}} \|f_1(x)-\mu_0 \|^2$. Then, based on the boundedness of $f_1(x)$,$f_2(x)$ and  we have:
+
+\begin{align}
+&COST_X(f_2, C^{f_1}(\mu^{f_2})) - COST_X(f_2, C^{f_2}(\mu^{f_2}))\\
+&=\left( \frac{1}{|X|}\sum_{x\in X} 
+\| f_2(x) - m_x \|^2
+\right)  - COST_X(f_2, \mu_2)\\
+&=\left( \frac{1}{|X|}\sum_{x\in X} 
+\| f_2(x) - f_1(x) + f_1(x) - m_x \|^2 \right)
+ - COST_X(f_2, \mu_2)
+\end{align}
+
+\begin{equation}
+\begin{aligned} 
+= \frac{1}{|X|}&\sum_{x\in X} \| f_2(x) - f_1(x) \|^2
++ \frac{1}{|X|}\sum_{x\in X} \| f_1(x) - m_x \|^2 \\  
+ &+ \frac{1}{|X|}\sum_{x\in X} 2<f_2(x) - f_1(x),f_1(x)- m_x>
+ - COST_X(f_2, \mu_2)
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+\begin{aligned} 
+\leq \frac{2}{|X|}&\sum_{x\in X} \| f_2(x) - f_1(x) \| 
++ COST_X(f_1, \mu_1)\\ 
++& \frac{4}{|X|}\sum_{x\in X} \|f_2(x) - f_1(x)\|
+ - COST_X(f_2, \mu_2)
+\end{aligned}
+\end{equation}
+
+
+\begin{align}
+\leq \frac{6}{|X|}\sum_{x\in X} \| f_2(x)-f_1(x) \| 
++ & \left( COST_X(f_1, \mu_1) - COST_X(f_2, \mu_2) \right)
+\end{align}
+
+\begin{equation}
+\leq \frac{6\eta}{12} + \frac{\eta}{2} \leq \eta
+\end{equation}
+
+
+
+
+
+%%======================================================================
+%\chapter[PDF Plots From Matlab]{Matlab Code for Making a PDF Plot}
+%\label{AppendixA}
+%% Tip 4: Example of how to get a shorter chapter title for the Table of Contents 
+%%======================================================================
+%\section{Using the GUI}
+%Properties of Matab plots can be adjusted from the plot window via a graphical interface. Under the Desktop menu in the Figure window, select the Property Editor. You may also want to check the Plot Browser and Figure Palette for more tools. To adjust properties of the axes, look under the Edit menu and select Axes Properties.
+%
+%To set the figure size and to save as PDF or other file formats, click the Export Setup button in the figure Property Editor.
+%
+%\section{From the Command Line} 
+%All figure properties can also be manipulated from the command line. Here's an example: 
+%\begin{verbatim}
+%x=[0:0.1:pi];
+%hold on % Plot multiple traces on one figure
+%plot(x,sin(x))
+%plot(x,cos(x),'--r')
+%plot(x,tan(x),'.-g')
+%title('Some Trig Functions Over 0 to \pi') % Note LaTeX markup!
+%legend('{\it sin}(x)','{\it cos}(x)','{\it tan}(x)')
+%hold off
+%set(gca,'Ylim',[-3 3]) % Adjust Y limits of "current axes"
+%set(gcf,'Units','inches') % Set figure size units of "current figure"
+%set(gcf,'Position',[0,0,6,4]) % Set figure width (6 in.) and height (4 in.)
+%cd n:\thesis\plots % Select where to save
+%print -dpdf plot.pdf % Save as PDF
+%\end{verbatim}
+
+%----------------------------------------------------------------------
+% END MATERIAL
+%----------------------------------------------------------------------
+
+% B I B L I O G R A P H Y
+% -----------------------
+
+% The following statement selects the style to use for references.  It controls the sort order of the entries in the bibliography and also the formatting for the in-text labels.
+\bibliographystyle{plain}
+% This specifies the location of the file containing the bibliographic information.  
+% It assumes you're using BibTeX (if not, why not?).
+\cleardoublepage % This is needed if the book class is used, to place the anchor in the correct page,
+                 % because the bibliography will start on its own page.
+                 % Use \clearpage instead if the document class uses the "oneside" argument
+\phantomsection  % With hyperref package, enables hyperlinking from the table of contents to bibliography             
+% The following statement causes the title "References" to be used for the bibliography section:
+\renewcommand*{\bibname}{References}
+
+% Add the References to the Table of Contents
+\addcontentsline{toc}{chapter}{\textbf{References}}
+
+\bibliography{hassan-refs}
+% Tip 5: You can create multiple .bib files to organize your references. 
+% Just list them all in the \bibliogaphy command, separated by commas (no spaces).
+
+% The following statement causes the specified references to be added to the bibliography% even if they were not 
+% cited in the text. The asterisk is a wildcard that causes all entries in the bibliographic database to be included (optional).
+\nocite{*}
+
+\end{document}
