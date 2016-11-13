@@ -185,7 +185,7 @@
 \newtheorem{corollary}{Corollary}
 \newtheorem{note}{Note}
 
-
+\newcommand{\mc}{\mathcal}
 %======================================================================
 %   L O G I C A L    D O C U M E N T -- the content of your thesis
 %======================================================================
@@ -215,9 +215,42 @@
 \chapter{Introduction}
 %======================================================================
 \section{What is clustering?}
-\section{Challenges}
-\section{Concrete questions}
+Computers `learn' in two ways. The first class of programs (or algorithms) are called \textit{supervised} methods where the algorithm learns to identify patterns (like sound or text of the alphabet 'A') with the help of a human being.  The second class of methods are \textit{unsupervised} where the algorithms learns to detect and distinguish patterns by themselves. 
 
+Clustering refers to a class of unsupervised learning algorithms. Given a list of objects as input, clustering aims to group together `similar' objects while `separating' the dissimilar ones. As we can see, clustering is a vaguely defined task. The meaning of the term \textit{similar} can change with the intended application. We will discuss this issue in more detail in the next section. 
+
+Note that a clustering algorithm takes as input a list of objects. This could be a list images or astronomical data (measurements from planets, stars etc.) or a list of DNA sequences or a list of users (of an online service) or a list of patients from a medical database or outputs from an industrial process or something else. This just goes to show the wide applicability of clustering algorithms. 
+
+\section{Challenges}
+The task of clustering is challenging due to the following impediments. 
+\begin{itemize}
+	\item \emph{Computationally expensive} - Clustering is often posed as an optimization problem. Given a list $\mc X$ of $n$ objects (or data points), the goal is to partition the list into say $k$ groups. A cost is associated with each possible partitioning of $\mc X$. The optimization problem then, is to find the partition with minimum cost. For many popular cost functions like $k$-means, $k$-median, $k$-medoids, it has been shown that finding the optimal solution is NP-Hard. \cite{redfg}. 
+	
+	In practice, often heuristics are used. These heuristics are not guaranteed to find the optimal solution. Moreover, they can get stuck at locally optimal solutions. It is NP-Hard to approximate the optimal solution as well. 
+	
+	\item \emph{Under-specificity} - This is another major problem is clustering. One that has not received adequate attention from the research community. We mentioned in the previous section that the clustering problem is not precisely defined. The same dataset can be clustered in multiple different ways depending on the intended application. 
+	
+	Lets consider a concrete example. Consider a dataset of images of faces of people (both male and female) with different emotions (eg. laughing and crying). This toy dataset is shown in Fig. \ref{fig:laugh-cry}. Now, this dataset has two `correct' $2$-clusterings. One clustering is when the males are in one cluster and the females are in another.. Second clustering is when people laughing are in one cluster and the people crying are in another cluster. Both these are reasonable choices. 
+	
+	However, without extra information, the algorithm doesn't know which one it should prefer. It is possible that the clustering outputted by the algorithm is not what the `user' or the application desired. This is problem of under-specificity which arises whenever multiple solutions are possible. 
+\end{itemize}
+
+\section{Concrete questions}
+Despite the challenges, clustering algorithms like $k$-means, $k$-median algorithms have been employed successfully in practice. Some applications include cancerous data detection, search engines etc. \cite{wang2005comparison,liu2007clustering}. 
+
+Any satisfactory theory of clustering must examine and explain this gap between theory and practice. In particular
+
+\begin{itemize}
+	\item Under what conditions on data are $k$-means or $k$-median optimization problems easy to solve?
+	\item Is it possible to have datasets on which popular clustering approaches fail but the proposed algorithm works?
+	\item Are there clustering algorithms which take the structure of the data into account? When do these approaches work and when do they fail?
+	\item How do you extract domain knowledge to better define the clustering task?
+\end{itemize}
+
+These are some of the questions that we would like to answer in our research. We have already made some progress on some of these questions. 
+
+\section{Structure of the proposal}
+In Chapter \ref{RLW}, we review some of the previous approaches in dealing with the challenges of clustering. In Chapter \ref{METHOD}, we introduce our notation and some definitions which will be used in the remainder of the proposal. In Chapters \ref{ANALYSIS} and \ref{SSC}, we discuss the approach we have taken to deal with the challenges in clustering. In Chapter \ref{FUTURE}, we discuss the avenues for future work. 
 
 %============================================
 \chapter{Related Work}
@@ -254,7 +287,7 @@
 
 %======================================================================
 \chapter{Sem-supervised Clustering}
-\label{CONCLUSION}
+\label{SSC}
 %======================================================================
 \section{Positive result}
 \section{Negative result}
