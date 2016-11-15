@@ -186,6 +186,7 @@
 \newtheorem{note}{Note}
 
 \newcommand{\mc}{\mathcal}
+\newcommand{\mb}{\mathbf}
 %======================================================================
 %   L O G I C A L    D O C U M E N T -- the content of your thesis
 %======================================================================
@@ -222,9 +223,10 @@ Clustering refers to a class of unsupervised learning algorithms. Given a list o
 Note that a clustering algorithm takes as input a list of objects. This could be a list images or astronomical data (measurements from planets, stars etc.) or a list of DNA sequences or a list of users (of an online service) or a list of patients from a medical database or outputs from an industrial process or something else. This just goes to show the wide applicability of clustering algorithms. 
 
 \section{Challenges}
+\label{introduction:challenges}
 The task of clustering is challenging due to the following impediments. 
 \begin{itemize}
-	\item \emph{Computationally expensive} - Clustering is often posed as an optimization problem. Given a list $\mc X$ of $n$ objects (or data points), the goal is to partition the list into say $k$ groups. A cost is associated with each possible partitioning of $\mc X$. The optimization problem then, is to find the partition with minimum cost. For many popular cost functions like $k$-means, $k$-median, $k$-medoids, it has been shown that finding the optimal solution is NP-Hard. \cite{redfg}. 
+	\item \emph{Computationally expensive} - Clustering is often posed as an optimization problem. Given a list $\mc X$ of $n$ objects (or data points), the goal is to partition the list into say $k$ groups. A cost is associated with each possible partitioning of $\mc X$. The optimization problem then, is to find the partition with minimum cost. For many popular cost functions like $k$-means, $k$-median, $k$-medoids, it has been shown that finding the optimal solution is NP-Hard. \cite{dasgupta2008hardness,megiddo1984complexity}. 
 	
 	In practice, often heuristics are used. These heuristics are not guaranteed to find the optimal solution. Moreover, they can get stuck at locally optimal solutions. It is NP-Hard to approximate the optimal solution as well. 
 	
@@ -257,10 +259,53 @@ In Chapter \ref{RLW}, we review some of the previous approaches in dealing with 
 \label{RLW}
 %=============================================
 \section{Common previous approaches}
+As discussed in Chapter \ref{introduction:challenges}, the most common approach to solving the clustering problem is to pose it as an optimization problem. Some of the examples include $k$-means optimization, $k$-median optimization, $k$-medoids etc. Below, we give a more formal definition of the $k$-means problem. 
+
+\begin{definition}[$k$-means optimization]
+Let $(\mb M, d)$ be a metric space. Given a finite set $\mc X \subseteq \mb M$ and $k$. Let $\mc C = \{C_1, \ldots. C_k\}$ be a partition of $\mc X$ into $k$ disjoint subsets. The goal is to find:
+$$\argmin_{\mc C} \sum_{i=1}^k \sum_{x \in C_i} d^2(x, c_i)$$
+where $c_i \in \mb M$ is the mean of all the points in $C_i$.  
+\end{definition}
+
+It has been shown that solving this optimization is NP-Hard \cite{dasgupta2008hardness}. In practice, heuristics are used to solve the minimization problem. The most popular is the Lloyd's algorithm \cite{lloyd1982least}. This algorithm has been used successfully on some clustering applications like cancerous data detection, search engines etc. \cite{wang2005comparison,liu2007clustering}. However, it is known that the Lloyd's algorithm can get stuck at local minima. It can sometimes even produce counter-intuitive clusterings \cite{mirkes2011k}. Similarly, other problems like $k$-median have also been shown to be NP-Hard \cite{megiddo1984complexity}.  
+
+Another question that people have investigated is that ``Is it possible to find an approximation to the optimal solution?". In many cases, the answer to this question is also negative. $K$-Means is NP-Hard to approximate (Awasthi et. al \cite{awasthi2015hardness}). Constant factor approximation algorithms are known for the $k$-median problem. Arya et. al \cite{arya2004local} provide a $(3+\epsilon)$ approximation to the $k$-median cost. If the underlying metric is Euclidean, Kolliopoulos et. al \cite{kolliopoulos1999nearly} provide a $(1+\epsilon)$-approximation to the $k$-median cost. 
+
+In majority of the cases, due to computational hardness, people have to rely on heuristics to solve the clustering problem. These heuristics have no performance guarantees and can often get stuck at local minima. 
+
 \section{Dealing with computational hardness}
+Despite the negative hardness results, clustering is applied successfully in practice. Researchers have examined this gap between theory and practice. One hypothesis that has recently gained traction is that ``Clustering is difficult only when it doesn't matter" or the CDNM thesis \cite{daniely2012clustering}. 
+
+This means that the data on which clustering algorithms are computationally expensive do not occur in practice. Researchers have characterized such data sets by defining notions of \textit{clusterable} data. They then propose efficient clustering algorithms for these {\em nice} datasets.
+
+Various notions of clusterability have been considered in the literature. Bilu et. al \cite{bilu2012stable} considered the problem of max-cut clustering of graphs. They defined an input instance to be `stable' if the optimal clustering doesn't change under small multiplicative perturbations. They designed an efficient clustering algorithm for $O(\sqrt{|\mc X|})$-resilient instances. 
+
+Continuing the same line of work, Awasthi et. al \cite{awasthi2012center} defined the notion of $\alpha$-center proximity. Informally speaking, a clustering has $\alpha$-center proximity if any point is $\alpha$ times closer to its own cluster center than to any other center. Bigger the $\alpha$, more is the separation. If the $k$-median optimal solution satisfies $(\alpha > 3)$-center stability then Awasthi et. al \cite{awasthi2012center} give an efficient algorithm to find the optimal. Balcan et. al \cite{balcan2012clustering} then improved this result to $\alpha > \sqrt{2}+1$. The problem is NP-Hard for $\alpha < 2$ \cite{ben2014data}. 
+
+Observe that the results discussed above assume that the entire input dataset has the niceness property. This assumption is very strict and unrealistic. A natural relaxation is to allow few points which do not have the niceness property. Such points are referred to as \textit{noise}. Balcan et. al \cite{balcan2012clustering} considered an input which has $\alpha$-center proximity except for an $\epsilon$ fraction of the points. For $\alpha > 2 + \sqrt{7}$, they were then able to find a $1+O(\epsilon)$-approximation to the cost of the $k$-median optimal solution. 
+
+Ben-David et. al \cite{ben2014clustering} introduced a somewhat-related notion of $\lambda$-center separation. They showed that if the input has this property then they can convert any clustering algorithm to one which is robust to noise. Their framework is very general. They can `robustify' any center-based clustering algorithm. However, they require very strong conditions on the separability of the data as well as noise. 
+
+In a different line of work, Ostrovsky et. al \cite{ostrovsky2006effectiveness} defined a notion of $\epsilon$-separatedness. An input satisfies this niceness property if the cost of the optimal $k$-clustering is $\epsilon^2$ times less than the cost of the optimal $(k-1)$-clustering. Ostrovsky et. al \cite{ostrovsky2006effectiveness} propose a variant of the Lloyd's algorithm. They show that if the input has $\epsilon$-separatedness then with high probability their algorithm finds a near-optimal $k$-means clustering.
+
+Awasthi et. al \cite{awasthi2010stability} introduce a notion of \textit{weak deletion stability} (WDS). Informally speaking, it says that a clustering has $(1+\alpha)$-WDS if deleting one of the clusters increases the cost by a factor of atleast $(1+\alpha)$. If the data has this property then they propose an algorithm which finds a $(1+\epsilon)$-approximation to the cost of the optimal clustering in $O(k |\mc X|^{poly(1/\epsilon , 1/\alpha)})$ time. 
+
 \section{Dealing with under-specificity}
+As discussed in Chapter \ref{introduction:challenges}, another major challenge in clustering is under-specificity. Same dataset can have multiple `correct' clusterings. A clustering which is correct (suitable) for one application maybe counter-intuitive for another application. Without knowledge of the intended application, many popular clustering algorithms would fail on a lot of applications. This is probably one of the reasons that clustering is not as widely used as it should be.  In this section, we will discuss two approaches on dealing with under-specificity. 
 
+\subsection{Multiple solutions} 
+One simple approach is to allow the algorithm to output multiple solutions. A hierarchical clustering tree is one way to efficiently represent different `feasible' clusterings of the input dataset. The clustering of choice can then be found by efficiently searching over the different prunings of the tree. This approach has been taken Balcan et. al \cite{balcan2012clustering}. 
 
+Another approach is to allow the algorithm to output a small list of what it considers feasible or good clusterings. Note that any list of size $O(|\mc X|^k)$ can output all the partitions of the dataset. Hence, any such list should have size polynomial in $k$ and $|\mc X|$.
+   
+\subsection{User interaction}
+A more interesting approach is to incorporate domain expertise by allowing the algorithm to interact with or get advice from a user. This framework is sometimes referred to as \textbf{semi-supervised clustering}. The advice is aimed at getting rid of the ambiguity in clustering. 
+
+This question has been addressed mainly in some application-oriented works. The algorithm gets as input, a dataset $\mc X$. In addition, \textit{link/do-not-link} constraints are also provided by the user. These constraints basically say that a particular pair of input instances should (or shouldn't) belong to the same cluster. Basu et. al \cite{basu2002semi} used these constraints to help guide the choice of initial centers in the Lloyd algorithm. 
+
+Another way to incorporate supervision is to assume that the data is generated from a particular distribution. The task is then to estimate the parameters of this distribution (\cite{basu2004probabilistic, kulis2009semi}). Ashtiani et. al \cite{ashtiani2015representation} incorporated supervision by asking the user or expert to cluster a small subset of the dataset. Using this information, their algorithm tries to infer the `true' clustering. 
+
+Balcan et. al \cite{balcan2008clustering} considered an interactive model of clustering. Their framework works as follows. The expert is provided with the current clustering. The expert then responds back by suggesting to either split a cluster or merge two clusters. The authors investigate the computational and query complexity of this problem. 
 %======================================================================
 \chapter{Preliminaries and Notation}
 \label{METHOD}
