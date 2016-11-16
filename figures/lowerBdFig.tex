@@ -1,0 +1,83 @@
+\ifdefined\COMPLETE
+\else
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\usetikzlibrary{shapes, calc, arrows, through, intersections, decorations.pathreplacing, patterns}
+
+\begin{document}
+\fi
+\def\alph{$2+\sqrt{5}$}
+\begin{tikzpicture}[scale=7]
+
+	\node[label=180:$R_1$] at (0.0,0) {$\diamond$};	
+	\node[] at (0.1,0) {$\bullet$};
+	\node[] at (0.2,0) {$\bullet$};
+	\node[] at (0.3,0) {$\bullet$};
+	\node[] at (0.4,0) {$\bullet$};
+	\node[] at (0.6,0) {$\ldots$};
+	
+	\node[] at (0.8,0) {$\bullet$};
+	\node[] at (0.9,0) {$\bullet$};
+	\node[] at (1.0,0) {$\diamond$};
+	
+	
+	\node[label=180:$G_1$] at (0.0,-0.1) {};	
+	\node[] at (0.2,-0.1) {$\circ$};
+	\node[] at (0.4,-0.1) {$\circ$};
+	\node[] at (0.6,-0.1) {$\ldots$};
+	
+	\node[] at (0.8,-0.1) {$\circ$};
+	
+	\node[label=180:$R_2$] at (0.0,-0.2) {$\diamond$};	
+	\node[] at (0.1,-0.2) {$\bullet$};
+	\node[] at (0.2,-0.2) {$\bullet$};
+	\node[] at (0.3,-0.2) {$\bullet$};
+	\node[] at (0.4,-0.2) {$\bullet$};
+	\node[] at (0.6,-0.2) {$\ldots$};
+	
+	\node[] at (0.8,-0.2) {$\bullet$};
+	\node[] at (0.9,-0.2) {$\bullet$};
+	\node[] at (1.0,-0.2) {$\diamond$};
+	
+	
+	
+	\node[label=180:$G_{l-1}$] at (0.0,-0.4) {};	
+	\node[] at (0.2,-0.4) {$\circ$};
+	\node[] at (0.4,-0.4) {$\circ$};
+	\node[] at (0.6,-0.4) {$\ldots$};
+	
+	\node[] at (0.8,-0.4) {$\circ$};
+	
+	\node[label=180:$R_l$] at (0.0,-0.5) {$\diamond$};	
+	\node[] at (0.1,-0.5) {$\bullet$};
+	\node[] at (0.2,-0.5) {$\bullet$};
+	\node[] at (0.3,-0.5) {$\bullet$};
+	\node[] at (0.4,-0.5) {$\bullet$};
+	\node[] at (0.6,-0.5) {$\ldots$};
+	
+	\node[] at (0.8,-0.5) {$\bullet$};
+	\node[] at (0.9,-0.5) {$\bullet$};
+	\node[] at (1.0,-0.5) {$\diamond$};
+	
+	
+	\node[label=90:\scriptsize$d$] at (0.05,0.0) {};
+	\node[label=90:\scriptsize$2$] at (0.15,0.0) {};
+	\node[label=90:\scriptsize$2$] at (0.85,0.0) {};
+	\node[label={90:\scriptsize $d-\epsilon$}] at (0.97,0.0) {};
+	\node[label=90:\scriptsize$4$] at (0.3,-0.1) {};
+	
+	
+	\draw[<->] (0.02, 0.0) -- (0.08, 0.0);
+	\draw[<->] (0.12, 0.0) -- (0.18, 0.0);
+	\draw[<->] (0.82, 0.0) -- (0.88, 0.0);
+	\draw[<->] (0.92, 0.0) -- (0.98, 0.0);
+	
+
+	\draw[<->] (0.38, -0.1) -- (0.22, -0.1);
+\end{tikzpicture}
+
+
+\ifdefined\COMPLETE
+\else
+\end{document}
+\fi

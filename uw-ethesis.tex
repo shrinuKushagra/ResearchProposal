@@ -173,9 +173,12 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage[boxruled]{algorithm2e}
 %\usepackage[round]{natbib}
+\usepackage{tikz}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 \newtheorem{definition}{Definition}
 \newtheorem{remark}{Remark}
@@ -190,6 +193,8 @@
 %======================================================================
 %   L O G I C A L    D O C U M E N T -- the content of your thesis
 %======================================================================
+
+\def\COMPLETE{}
 \begin{document}
 
 % For a large document, it is a good idea to divide your thesis
@@ -212,6 +217,13 @@
 % documents as suggested above, but you get the idea. If they were
 % separate documents, they would each start with the \chapter command, i.e, 
 % do not contain \documentclass or \begin{document} and \end{document} commands.
+
+
+
+
+
+
+
 %======================================================================
 \chapter{Introduction}
 %======================================================================
@@ -253,6 +265,13 @@ These are some of the questions that we would like to answer in our research. We
 
 \section{Structure of the proposal}
 In Chapter \ref{RLW}, we review some of the previous approaches in dealing with the challenges of clustering. In Chapter \ref{METHOD}, we introduce our notation and some definitions which will be used in the remainder of the proposal. In Chapters \ref{ANALYSIS} and \ref{SSC}, we discuss the approach we have taken to deal with the challenges in clustering. In Chapter \ref{FUTURE}, we discuss the avenues for future work. 
+
+
+
+
+
+
+
 
 %============================================
 \chapter{Related Work}
@@ -306,36 +325,441 @@ This question has been addressed mainly in some application-oriented works. The 
 Another way to incorporate supervision is to assume that the data is generated from a particular distribution. The task is then to estimate the parameters of this distribution (\cite{basu2004probabilistic, kulis2009semi}). Ashtiani et. al \cite{ashtiani2015representation} incorporated supervision by asking the user or expert to cluster a small subset of the dataset. Using this information, their algorithm tries to infer the `true' clustering. 
 
 Balcan et. al \cite{balcan2008clustering} considered an interactive model of clustering. Their framework works as follows. The expert is provided with the current clustering. The expert then responds back by suggesting to either split a cluster or merge two clusters. The authors investigate the computational and query complexity of this problem. 
+
+
+
+
+
+
+
+
+
 %======================================================================
-\chapter{Preliminaries and Notation}
+\chapter{Preliminaries}
 \label{METHOD}
 %======================================================================
-\section{Definition}
+
+Let the metric space be $(\mb M, d)$. We are given a finite set $\mc X \subseteq \mb M$. A $k$-clustering of $\mc X$, denoted by $\mc C_{\mc X} = \{C_1, \ldots, C_k\}$, is a partition of $\mc X$ into $k$ disjoint subsets. Given points (or centers) $c_1, \ldots, c_k \in \mb M$. The $k$-clustering induced by these points assigns each point in $\mc X$ to its nearest center $c_i$. Such a clustering is also known as center-based clustering.
+
+\begin{definition}[$r(\mc C_{\mc X}), m(\mc C_{\mc X})$]
+Given clustering $\mc C_{\mc X} = \{C_1, \ldots, C_k\}$ induced by centers $c_1, \ldots, c_k \in \mb M$, we define 
+\begin{align*}
+&m(\mc{C}_{\mc{X}}) = \min_i |C_i|\\
+&r(\mc{C}_{\mc{X}}) = \max_i \thinspace r(C_i)
+\end{align*}
+where the radius of a set $\mc A$ given a center $c$ is defined as $\max_{x \in \mc A} d(x, c)$.
+\end{definition}
+
+\noindent Consider any center-based clustering. There are two possibilities. In the first case, the centers $c_1, \ldots, c_k$ can be arbitrary points in the metric space $\mb M$. This is known as the \textbf{steiner} setting. In the second case, the centers are restricted to be members of the dataset $\mc X$. This is the \textbf{proper} setting. 
+
 \section{Clusterability notions}
-	\subsection{$\alpha$-center proximity}
-	\subsection{$\gamma$-margin}
-	\subsection{$\lambda$-center separation}
+As discussed in previous chapters, various clusterability notions have been considered to explain the success of clustering algorithms. The intention is to show that clustering is easy if the data has this nice property or the data is clusterable. In this section, we discuss some of the notions which have considered and some which we have introduced.
+
+\subsection{Center proximity}
+\begin{definition}[$\alpha$-center proximity \cite{awasthi2012center}]
+\label{defn:alphacp}
+A clustering $\mc C_{\mc X} = \{C_1, \ldots, C_k\}$ satisfies $\alpha$-center proximity w.r.t $\mc X$ and $k$ if there exist centers $c_1, \ldots, c_k \in \mb M$  such that the following holds. For all $x \in C_i$ and $i\neq j$, $$\alpha d(x, c_i) < d(x, c_j)$$
+\end{definition}
+The notion of center proximity was introduced by Awasthi et. al \cite{awasthi2012center}. It says that each point is $\alpha$-times closer to its own cluster center than to any other centers. Note that this definition works in noise-less case. That is, it assumes that all the points in the input $\mc X$ satisfy the niceness property. A more relaxed version, considered by Balcan et. al \cite{balcan2012clustering}, is when all except an $\epsilon$ fraction of input points satisfy this definition. 
+
+Below, we consider an even more relaxed version which we call $(\alpha, \eta)$-center proximity. It says that the input has a subset $\mc S \subseteq \mc X$ which satisfies the niceness property. Also, the remaining part of the dataset (or noise) is `sparse'. Informally, this means that any ball in our metric space $\mb M$ has few points from $\mc X \setminus \mc S$. 
+
+\begin{definition}[$(\alpha, \eta)$-center proximity]
+\label{def:alphaeta}
+Given $\mc S \subseteq \mc X$, a clustering $\mc C_{\mc S} = \{S_1, \ldots, S_k\}$ has $(\alpha, \eta)$-center proximity w.r.t $\mc X, \mc S$ and $k$ if there exists centers $s_1, \ldots, s_k \in \mb M$  such that the following holds.
+
+\begin{itemize}
+\label{defn:alphacpnoise}	
+\item[$\diamond$] {\bf $\alpha$-center proximity}: For all $x \in S_i$ and $i\neq j$, $\thinspace\alpha d(x, s_i) < d(x, s_j)$
+\item[$\diamond$]{\bf $\eta$-sparse noise}: For any ball $B$, $r(B)\leq \eta \thinspace r(\mc{C}_{\mc S}) \implies |B\cap (\mc X\setminus \mc S)| < \frac{m(\mc C_{\mc S})}{2}$
+\end{itemize}
+\end{definition}
+
+\subsection{Center Separation}
+\begin{definition}[$\lambda$-center separation \cite{ben2014clustering}]
+\label{defn:lambdacs}
+A clustering $\mc C_{\mc X} = \{C_1, \ldots, C_k\}$ has $\lambda$-center separation w.r.t $\mc X$ and $k$ if there exists centers $c_1, \ldots, c_k \in \mb M$ such that $\mc C_{\mc X}$ is the clustering induced by these centers and the following holds. For all $i\neq j$, $$d(c_i, c_j) > \lambda r(\mc{C}_{\mc{X}})$$
+\end{definition}
+
+Same as before, we consider a relaxed version of this definition which we call $(\lambda, \eta)$-center proximity. The input has a subset $\mc S \subseteq \mc X$ which satisfies center separation while the remaining part is sparse. 
+
+\begin{definition}[$(\lambda, \eta)$-center separation]
+Given $\mc S \subseteq \mc X$, a clustering $\mc C_{\mc S}$ has $(\lambda, \eta)$-center separation w.r.t $\mc X, \mc S$ and $k$ if there exists centers $s_1, \ldots, s_k \in \mb M$ such that $\mc C_{\mc X}$ is the clustering induced by these centers and the following holds.
+
+\begin{itemize}
+\label{defn:lambdacsnoise}
+\item[$\diamond$] {\bf $\lambda$-center separation}: For all $i\neq j$, $\thinspace d(s_i, s_j) > \lambda r({\mc C}_{\mc S})$
+\item[$\diamond$]{\bf $\eta$-sparse noise}: For any ball $B$, $r(B)\leq \eta \thinspace r(\mc{C}_{\mc S}) \implies |B\cap (\mc X\setminus \mc S)| < \frac{m(\mc C_{\mc S})}{2}$
+\end{itemize}
+\end{definition}
+
+\subsection{Margin assumption}
+\begin{table}[]
+\centering
+\caption{Known results for $\alpha$-center proximity}
+\label{table:alphacp}
+\begin{tabular}{lll}
+\cline{2-3}
+\multicolumn{1}{l|}{} & \multicolumn{1}{l|}{Euclidean} & \multicolumn{1}{l|}{General Metric} \\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Centers \\ from data\end{tabular}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : $\sqrt{2}+1$  \cite{balcan2012clustering}\\ Lower bound : ?\end{tabular}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : $\sqrt{2}+1$  \cite{balcan2012clustering}\\ Lower bound : 2 \cite{ben2014data}\end{tabular}} \\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Unrestricted \\ Centers \end{tabular}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : $2+\sqrt{3}$ \cite{awasthi2012center}\\ Lower bound : ?\end{tabular}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : $2+\sqrt{3}$ \cite{awasthi2012center}\\ Lower bound : 3 \cite{awasthi2012center}\end{tabular}} \\ \hline
+ &  & 
+\label{table:alphacenter}
+\end{tabular}
+\end{table}
+
+\begin{definition}[$\gamma$-margin]
+\label{defn:gammamargin}
+A clustering $\mc C_{\mc X} = \{C_1, \ldots, C_k\}$ has $\gamma$-margin w.r.t $\mc X$ and $k$  if there exists centers $c_1, \ldots, c_k \in \mb M$ such that $\mc C_{\mc X}$ is the clustering induced by these centers and the following holds. For all $x \in C_i$ and $y \in {\mc X} \setminus C_i$,
+$$\gamma d(x, \mu_i) < d(y, \mu_i)$$
+\end{definition}
+
+\begin{table}[]
+\centering
+\caption{Results for $\gamma$-margin}
+\label{table:gammamargin}
+\begin{tabular}{lll}
+\cline{2-3}
+\multicolumn{1}{l|}{}                                                                     & \multicolumn{1}{l|}{Euclidean} & \multicolumn{1}{l|}{General Metric}                                                                         \\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Centers \\ from data\end{tabular}}        & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : 2 (Thm. \ref{thm:upperCenterData})\\ Lower bound : ? \end{tabular}}    &       \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : 2 (Thm. \ref{thm:upperCenterData})\\ Lower bound : 2 (Thm. \ref{thm:lowerCenterData})\end{tabular}}           \\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Unrestricted \\Centers \end{tabular}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : 3 (Thm. \ref{thm:upperCenterMetric})\\ Lower bound : 1.84 (Thm. \ref{A-thm:gammaLower})\\ \end{tabular}}         & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : 3 (Thm. \ref{thm:upperCenterMetric})\\ Lower bound : 3 (Thm. \ref{thm:lowerCenterMetric})\\ \end{tabular}} \\ \hline
+                                                                                          &                       &    
+\label{table:gammamargin}                                                                                                                                                                                                 
+\end{tabular}
+\end{table}
+  
+\noindent The margin assumption is closely related to center proximity. From Tables \ref{table:alphacenter} and \ref{table:gammamargin}, it is clear that the results which were obtained in literature using center proximity assumptions can also be obtained using margin assumptions. Also, observe that under margin assumptions, in a lot of cases, the upper and lower bounds are tight. This shows that the margin assumption is a more natural property than center proximity and provides separation of easy and hard instances. 
+
 \section{Same-cluster queries}
+We discussed in previous chapters that under-specificity is one of the major challenges in clustering. To get around this problem, one of the approaches has been to incorporate domain knowledge by using some form of weak supervision. In our framework, this is accomplished by the use of same-cluster queries. 
+
+Given a $k$-clustering $\mc C = \{C_1, \ldots, C_k\}$ of some set $\mc X$. A $\mc C$-oracle is a function $f_{\mc C}$ that answers queries according to the clustering $\mc C$.
+
+\begin{definition}[Same-cluster Query]
+\label{defn:sameclusterquery}
+A same-cluster query asks whether two instances $x_1$ and $x_2$ belong to the same cluster, i.e., 
+$$f_{\mc C}(x_1, x_2) = \left\{
+	\begin{array}{ll}
+		\mbox{true }  & \mbox{if } x_1 \overset{\mc C}{\sim} x_2   \\
+		\mbox{false } & otherwise 
+	\end{array}
+\right. $$
+\end{definition} 
+
+Similar to same-cluster queries are, what we call, cluster-assignment queries. In this case, given a single point $x$, the oracle returns the index of the cluster in which $x$ belongs. More formally, 
+
+\begin{definition}[Cluster-assignment Query]
+$f_{\mc C}(x) = i \iff x \in C_i$.
+\end{definition}
+
+Note that each cluster-assignment query can be replaced by $k$ same-cluster queries. However, often it is more convenient to describe our algorithms and results in terms of cluster-assignment queries. Also, any same-cluster query can be replaced by two cluster assignment queries. Hence, the two query models are equivalent upto a polynomial factor. 
+
+\section{Miscellaneous definitions}
+\begin{definition}[$\mc C_{\mc X}$ restricted to a set] Given $\mc S \subseteq \mc X$ and a clustering $\mc C_{\mc X} = \{C_1, \ldots, C_k\}$ of the set $\mc X$. We define $\mc C_{\mc X}$ restricted to the set $\mc S$ as $\mc C_{{\mc X}|_{\mc S}} = \{C_1 \cap S, \ldots, C_k \cap S\}$. 
+\end{definition}
+
+\begin{definition}[$\mc C_{\mc X}$ respects $\mc C_{\mc S}$] Given $\mc S \subseteq \mc X$, clusterings $\mc C_{\mc X} = \{C_1, \ldots, C_k\}$ and $\mc C_{\mc S} = \{S_1, \ldots, S_{k'}\}$. We say that $\mc C_{\mc X}$ respects $\mc C_{\mc S}$ if $\mc C_{{\mc X}|_{\mc S}} = \mc C_{\mc S}$.
+\end{definition}
+
+\begin{definition}[$\mc T$ or $\mc L$ captures $\mc C_{\mc S}$]Given a hierarchical clustering tree $\mc T$ of $\mc X$ and a clustering $\mc C_{\mc S}$ of $\mc S \subseteq \mc X$.  We say that $\mc T$ captures $\mc C_{\mc S}$ if there exists a pruning $\mc P$ which respects $\mc C_{\mc S}$. 
+
+Similarly, given a list of clusterings $\mc L$ of $\mc X$ and a clustering $\mc C_{\mc S}$ of $\mc S \subseteq \mc X$. We say that $\mc L$ captures $\mc C_{\mc S}$ if there exists a clustering $\mc C_{\mc X} \in \mc L$ which respects $\mc C_{\mc S}$. 
+\end{definition}
 
 
+
+
+
+
+ 
 %======================================================================
-\chapter{Sparse Noise}
+\chapter{Clustering under Sparse Noise}
 \label{ANALYSIS}
 %======================================================================
+One of the major challenges of clustering is that it is computationally expensive. In Chapter \ref{RLW}, we discussed a recent line of work to address this issue, namely, notions of clusterability. The basic idea is to show that clustering is easy (computationally cheap) if the data has some nice properties. However, lot of these notions are unrealistic. They impose very strict conditions on the input. Such conditions are not likely to occur in real-world situations. 
+
+The reason for this is that adequate attention has not been paid to clusterability notions which handle noise. Previously, researchers have addressed noise robustness in a very limited context, like uniform random noise or worst-case adversarial noise \cite{balcan2012clustering,ackerman2009clusterability}.
+
+In this chapter we will take a different approach. What distinguishes noise from `nice' part of the input data? In many real-world applications, apart from having cohesive subsets, the data also has a ``gray background'' that it is \emph{structureless} or \emph{sparse}. We introduced our notions in Defn. \ref{def:alphaeta} and \ref{defn:lambdacsnoise}. Note that this definition imposes no restriction on the size of the noisy data.  We can handle as many noisy points as possible as long as they are sparse. 
+
+Our approach diverges from previous discussions of clusterable data in yet another aspect. Much of the theoretical research of clustering algorithms views clustering as an optimization problem (which are NP-Hard to solve). Hence, heuristics are used to solve the optimization problem. However, given a large dataset, there is no way to know the cost of the optimal solution or how close the output of the heuristic is to the optimal solution. But the user may have some notion of a meaningful cluster and would be happy if the output `captures' any such nice solution. 
+
+In the next section, we first present algorithm which captures all nice solutions if the input satisfies $(\alpha, \eta)$-center proximity. We then show that if the parameters $\alpha$ or $\eta$ are relaxed, then such results are no longer possible. We do a simialr analysis when the input satisfies $(\lambda, \eta)$-center separation as well.  
+
 \section{Center Proximity}
-\subsection{Positive result}
-\subsection{Negative result}
+We study the problem of recovering all $(\alpha, \eta)$-center proximal clusterings of a set $\mc X$. The goal of our algorithm is to produce an efficient representation (hierarchical clustering tree) of all possible $(\alpha, \eta)$-center proximal nice clusterings rather than to output a single clustering or to optimize an objective function.
+\begin{itemize}
+\item  {\it Positive result under sparse noise} - In Section \ref{section:positiveResultSparseNoise}, we give our main result under sparse noise. If $\alpha \ge 2 + \sqrt{7} \approx 4.6$ and $\eta \ge 1$; for any value of $t$, Alg.~\ref{alg:alphacp} outputs a tree which captures all clusterings $\mc C^*$ (of a subset of $\mc X$) which satisfy $(\alpha, \eta)$-center proximity and $m(C^*)=t$.
+\item  {\it Lower bound under sparse noise} - In Section \ref{section:alphaLowerBoundSparse}, we show that if $\alpha \le 2 + \sqrt{3} \approx 3.7$ and $\eta \le 1$ then there is no tree and no list of `small' size ($< 2^{k/2}$) which can capture all clusterings $\mc C$ (of a subset of $\mc X$) which satisfy $(\alpha, \eta)$-center proximity even for a fixed value of the size of the smallest cluster $(m(C) = t)$.
+\item {\it Lower bound with arbitrary noise} - In Section \ref{section:alphaLowerBoundArbitrary}, we show that for a given value of a parameter $t$, if $\alpha \le 2\sqrt{2} + 3 \approx 5.8$ and the number of noisy points exceeds $\frac{3}{2}t$ then no tree can capture all clusterings $\mc C$ (of a subset of $\mc X$) which satisfy $\alpha$-center proximity even for fixed $m(\mc C) = t$. Identical result holds for `small' ($<2^{k/2}$) lists if the number of noisy points exceeds $\frac{3k}{2}t$.
+\end{itemize} 
+
+\subsection{Positive result under sparse noise}
+\label{section:positiveResultSparseNoise}
+Given a clustering instance $(\mc X, d)$ and a parameter $t$, we introduce an efficient algorithm which outputs a hierarchical clustering tree $\mc T$ of $\mc X$ with the following property. For every $k$, for every $\mc S \subseteq \mc X$ and for every $k$-clustering $\mc C_{\mc S}$ which satisfies $(\alpha, \eta)$-center proximity (for $\alpha \ge 2 + \sqrt{7}$ and $ \eta \ge 1)$ and $m(\mc C_{\mc S}) = t$, $\mc T$ captures $\mc C_{\mc S}$. It is important to note that our algorithm only knows $\mc X$ and has no knowledge of the set $\mc S$.
+
+Our algorithm has a linkage based structure similar to \cite{balcan2012clustering}. However, our method benefits from a novel {\it sparse distance condition}. We introduce the algorithm in Alg.~\ref{alg:alphacp} and prove its efficiency and correctness in Theorem~\ref{thm:algcptime} and Theorem~\ref{thm:alphacpnoise} respectively. 
+
+\begin{definition}[Sparse distance condition]
+	 Given a clustering $\mc C = \{C_1,\\\ldots,C_k\}$ of the set $\mc X$ and a parameter $t$. We say that the ball $B \subseteq \mc X$ satisfies the sparse distance condition w.r.t clustering $\mc C$ when the following holds.
+	 
+\begin{itemize}
+\item $|B| \ge t$.
+\item For any $C_i \in \mc C$, if $C_i \cap B \neq \emptyset$, then $C_i \subseteq B$ or $|B \cap C_i| \ge t/2$.
+\end{itemize}
+\end{definition}
+
+Intuitively, Alg.~\ref{alg:alphacp} works as follows. It maintains a clustering $\mc C^{(l)}$, which is initialized so that each point is in its own cluster. It then goes over all pairs of points $p, q$ in increasing order of their distance $d(p, q)$. If $B(p, d(p,q))$ satisfies the sparse distance condition w.r.t $\mc C^{(l)}$, then it merges all the clusters which intersect with this ball into a single cluster and updates $\mc C^{(l)}$. Furthermore, the algorithm builds a tree with the nodes corresponding to the merges performed so far. We will show that for all $\mc S \subseteq \mc X$ which are $(\alpha, \eta)$-proximal $t$-min nice and for all clusterings $\mc C_S$ which have $(\alpha, \eta)$-center proximity, Alg.~\ref{alg:alphacp} outputs a tree which captures $\mc C_S$.
+
+\begin{algorithm}
+	\SetAlgoLined
+	\KwIn{$(\mc X, d)$ and $t$}
+	\KwOut{A hierarchical clustering tree $T$ of $\mc X$.}
+	
+\vspace{0.1in}Let $\mc C^{(l)}$ denote the clustering $\mc X$ after $l$ merge steps have been performed. Initialize $\mc C^{(0)}$ so that all points are in their own cluster. That is, $\mc C^{(0)} = \{ \{x\}: x \in \mc X\}$.
+	
+	Go over all pairs of points $p, q$ in increasing order of the distance $d(p, q)$. If $B = B(p, d(p, q))$ satisfies the sparse distance condition then\\
+	\hspace{0.24in}Merge all the clusters which intersect with $B$ into a single cluster.
+	
+	\vspace{0.1in}Output clustering tree $T$. The leaves of $T$ are the points in dataset $\mc X$. The internal nodes correspond to the merges performed.
+\caption{Alg. for $(\alpha, \eta)$-center proximity with parameter $t$}	
+\label{alg:alphacp}
+\end{algorithm}
+\vspace{-.1in}
+\begin{theorem}
+\label{thm:alphacpnoise}
+Given a clustering instance $(\mc X, d)$ and a parameter $t$. Alg.~\ref{alg:alphacp} outputs a tree $\mc T$ with the following property. For all $k$, $\mc S \subseteq \mc X$ and for all $k$-clusterings $\mc C^*_{\mc S} = \{S_1^*, \ldots, S_k^*\}$ which satisfy $(2+\sqrt{7}, 1)$-center proximity the following holds. If $m(\mc C_{\mc S}^*) = t$ then $\mc T$ captures $\mc C_{\mc S}$.
+\end{theorem}
+
+\begin{theorem}
+\label{thm:algcptime}
+Given clustering instance $(\mc X, d)$ and $t$. Alg.~\ref{alg:alphacp} runs in  $poly(|\mc X|)$.
+\end{theorem}
+
+\begin{proof}
+Let $n = |\mc X|$. Checking if $B$ satisfies the sparse-distance condition takes $O(n)$ time and hence the algorithm runs in $O(n^3)$ time.
+\end{proof}
+
+\subsection{Lower bound under sparse noise}
+\label{section:alphaLowerBoundSparse}
+\begin{theorem}
+\label{thm:noalgalphacp}
+Given the number of clusters $k$ and parameter $t$. For all $\alpha \le 2+\sqrt{3}$ and $\eta \le 1$ there exists a clustering instance $(\mc X, d)$ such that any clustering tree $\mc T$ of $\mc X$ has  the following property. There exists $\mc S \subseteq \mc X$ and clustering $\mc C_{\mc S}$ which satisfies $(\alpha, \eta)$-center proximity and $ m(\mc C_{\mc S}) = t$ but $\mc T$ doesn't capture $\mc C_{\mc S}$.
+\end{theorem}
+
+\begin{theorem}
+\label{thm:nolistalphacp}
+Given the number of clusters $k$ and parameter $t$. For all $\alpha \le 2+\sqrt{3}$, $\eta \le 1$ there exists $(\mc X, d)$ such that any list $\mc L$ (of clusterings of $\mc X$) has  the following property. If $|\mc L| < 2^{\frac{k}{2}}$ then there exists $\mc S \subseteq \mc X$ and clustering $\mc C_{\mc S}$ which satisfies $(\alpha, \eta)$-center proximity and $ m(\mc C_{\mc S}) = t$ but $\mc L$ doesn't capture $\mc C_{\mc S}$.
+\end{theorem}
+
+\subsection{Lower bound under arbitrary noise}
+\label{section:alphaLowerBoundArbitrary}
+
+\begin{theorem}
+\label{thm:nosparsealg}
+Given the number of clusters $k$ and a parameter $t$. For all $\alpha < 2\sqrt 2 + 3$ there exists $(\mc X, d)$ such that any clustering tree $\mc T$ of $\mc X$ has the following property. There exists $\mc S \subseteq \mc X$ and there exists clustering $\mc C_{\mc S}$ which satisfies $\alpha$-center proximity such that $m(\mc C_{\mc S}) = t$ and the following holds. If $|\mc X \setminus \mc S| \ge \frac{3t(\mc C_{\mc S})}{2}+5$, then $\mc T$ doesn't capture $\mc C_{\mc S}$.
+\end{theorem}
+
+\begin{theorem}
+\label{thm:nosparselistalphacp}
+Given the number of clusters $k$ and parameter $t$. For all $\alpha \le 2+\sqrt{2}+3$ there exists $(\mc X, d)$ such that any list $\mc L$ (of clusterings of $\mc X$) has  the following property. There exists $\mc S \subseteq \mc X$ and there exists clustering $\mc C_{\mc S}$ which satisfies $\alpha$-center proximity such that $m(\mc C_{\mc S}) = t$ and the following holds. If $|\mc L| < 2^{\frac{k}{2}}$ and $|\mc X \setminus \mc S|\ge \frac{k}{2}(\frac{3t(\mc C_{\mc S})}{2}+5)$, then $\mc L$ doesn't capture $\mc C_{\mc S}$.
+\end{theorem}
+
+
 \section{Center Separation}
-\subsection{Positive result}
-\subsection{Negative result}
+In this section, we study the problem of recovering $(\lambda, \eta)$-center separated clusterings of a set $\mc X$, in the presence of noise. Here is a more precise overview of the results of this section:
+\begin{itemize}
+\item  {\it Positive result under sparse noise} - In Section \ref{section:lambdaPositiveResultSparseNoise}, we show that if $\lambda \ge 4$ and $\eta \ge 1$; for any value of parameters $r$ and $t$, Alg.~\ref{alg:lambdacs} outputs a clustering which respects all clusterings $\mc C^*$ (of a subset of $\mc X$) which satisfies $(\lambda, \eta)$-center proximity and $m(C^*)=t$ and $r(C^*) = r$.
+\item  {\it Lower bound under sparse noise} - In Section \ref{section:lambdaLowerBoundSparse}, we show that, if $\lambda < 4$ and $\eta \le 1$ then there is no tree and no list of `small' size ($<2^{k/2}$) which can capture all clusterings $\mc C$ (of subset of $\mc X$) which satisfy $(\lambda, \eta)$-center proximity even for fixed values of the size of the smallest cluster $(m(C) = t)$ and maximum radius ($r(C) = r$).
+\item {\it Lower bound with arbitrary noise} - In Section \ref{section:lambdaLowerBoundArbitrary}, we show that for a given value of parameters $r$ and $t$, if $\lambda \le 6$ and the number of noisy points exceeds $\frac{3}{2}t$ then no tree can capture all clusterings $\mc C$ (of a subset of $\mc X$) which satisfy $\lambda$-center separation even for fixed $m(\mc C) = t$ and $r(\mc C) = r$. Identical result holds for `small' ($<2^{k/2}$) lists if the number of noisy points exceeds $\frac{3k}{2}t$.
+\end{itemize}
+
+\subsection{Positive result under sparse noise}
+\label{section:lambdaPositiveResultSparseNoise}
+We are given a clustering instance $(\mc X, d)$ and parameters $r$ and $t$. Our goal is to output a clustering $\mc C_{\mc X}$ which has the following property. For every $k$, for every $\mc S \subseteq \mc X$ and for every $k$-clustering $\mc C_{\mc S}$ which satisfies $(\lambda, \eta)$-center separation, the clustering $\mc C_{\mc X}$ restricted to $\mc S$ equals $\mc C_{\mc S}$. 
+
+In the next section, we propose a clustering algorithm (Alg.~\ref{alg:lambdacs}) and prove (Theorem~\ref{thm:lambdacsnoise}) that our algorithm indeed achieves the above mentioned goal (under certain assumptions on the parameters $\lambda$ and $\eta$). It is important to note that our algorithm only knows $\mc X$ and has no knowledge of the set $\mc S$. 
+
+Intuitively, Alg.~\ref{alg:lambdacs} works as follows. In the first phase, it constructs a list of balls which have radius at most $r$ and contain at least $t$ points. It then constructs a graph as follows. Each ball found in the first phase is represented by a vertex. If two balls have a `large' intersection then there is an edge between the corresponding vertices in the graph. We then find the connected components in the graph which correspond to the clustering of the original set $\mc X$. 
+
+\begin{algorithm}[!ht]	
+	\KwIn{$(\mc X, d), t$ and $r$}
+	\KwOut{A clustering $\mc C$ of the set $\mc X$.}
+	
+	\vspace{0.1in}\textbf{Phase 1}\\
+	Let $\mc L$ denote the list of balls found so far. Initialize $\mc L$ to be the empty set. $\mc L = \emptyset$.
+	
+	Go over all pairs of points $p, q \in \mc X$ in increasing order of the distance $d(p, q)$. Let $B := B(p, d(p, q))$. If $|B| \ge t$ and $r(B) \le r$ then
+	
+	\hspace{0.24in}$\mc L = \mc L \thinspace\cup B$
+	
+	\vspace{0.1in}Output the list of balls $\mc L = \{B_1, \ldots, B_l\}$ to the second phase of the algorithm.
+	
+	\vspace{0.1in}\textbf{Phase 2}\\
+	Construct a graph $G = (V, E)$ as follows. $V = \{v_1, v_2, \ldots, v_l\}$. If $|B_i \cap B_j| \ge t/2$ then construct an edge between $v_i$ and $v_j$.
+	
+	Find connected components ($G_1, \ldots, G_{k}$) in the graph $G$. 
+	
+	Merge all the points in the same connected component together to get a clustering $\mc C = \{C_1, \ldots, C_k\}$ of the set $\mc X$.
+	
+	Assign $x \in \mc X \setminus \mc \cup_i B_i$ to the closest cluster $C_i$. That is, $i := \argmin\limits_{j\in [k]} \min\limits_{y \in C_j}d(x, y)$. Output $\mc C$. 
+\caption{Alg. for $(\lambda, \eta)$-center separation with parameters $t$ and $r$}
+\label{alg:lambdacs}
+\end{algorithm}
+\vspace{-.1in}
+\begin{theorem}
+\label{thm:lambdacsnoise}
+Given a clustering instance $(\mc X, d)$ and parameters $r$ and $t$. For every $k$, for every $\mc S \subseteq \mc X$ and for all $k$-clusterings $\mc C^*_{\mc S} = \{S_1^*, \ldots, S_k^*\}$ which satisfy $(4, 1)$-center separation such that $ m(\mc C_{\mc S}^*) = t$ and $r(\mc C_{\mc S}^*) = r$, the following holds. Alg.~\ref{alg:lambdacs} outputs a clustering $\mc C_{\mc X}$ such that $\mc C_{\mc X}|_{\mc S} = \mc C_{\mc S}^*$.
+\end{theorem}
+
+\begin{theorem}
+\label{thm:alglambdacstime}
+Given $(\mc X, d)$ and parameters $r$ and $t$. Alg.~\ref{alg:lambdacs} runs in $poly(|\mc X|)$.
+\end{theorem}
+
+\begin{proof}
+Let $n = |\mc X|$. Phase 1 of Alg.~\ref{alg:lambdacs} runs in $O(n^2)$ time. Phase 2 gets a list of size $l$. Constructing $G$ and finding connected components takes $O(l^2)$ time. Hence, the algorithm runs in $O(n^2)$ time.
+\end{proof}
+
+
+\subsection{Lower bound under sparse noise}
+\label{section:lambdaLowerBoundSparse}
+\begin{theorem}
+\label{thm:noalglambdacs}
+Given the number of clusters $k$ and parameters $r$ and $t$. For all $\lambda < 4$ and $\eta \le 1$, there exists a clustering instance $(\mc X , d)$ such that any clustering tree $\mc T$ of $\mc X$ has the following property. There exists $\mc S \subseteq \mc X$ and a $k$-clustering $\mc C_{\mc S} = \{S_1, \ldots, S_k\}$ which satisfies $(\lambda, \eta)$-center separation such that $m(\mc C_{\mc S}) = t$ and $r(\mc C_{\mc S}) = r$, but $\mc T$ doesn't capture $\mc C_{\mc S}$.
+\end{theorem}
+
+\begin{theorem}
+\label{thm:nolistlambdacs}
+Given the number of clusters $k$ and parameters $r$ and $t$. For all $\lambda \le 4$ and $\eta \le 1$ there exists a clustering instance $(\mc X, d)$ such that any list $\mc L$ (of clusterings of $\mc X$) has  the following property. If $|\mc L| < 2^{\frac{k}{2}}$ then there exists $\mc S \subseteq \mc X$ and clustering $\mc C_{\mc S}$ which satisfies $(\lambda, \eta)$-center separation and $ m(\mc C_{\mc S}) = t$ and $r(\mc C_{\mc S}) = r$, but $\mc L$ doesn't capture $\mc C_{\mc S}$.
+\end{theorem}
+
+
+\subsection{Lower bound with arbitrary noise}
+\label{section:lambdaLowerBoundArbitrary}
+
+\begin{theorem}
+\label{thm:nosparselambdaalg}
+Given the number of clusters $k$ and parameters $r$ and $t$. For all $\lambda < 6$, there exists a clustering instance $(\mc X , d)$ such that any clustering tree $\mc T$ of $\mc X$ has the following property. There exists $\mc S \subseteq \mc X$ and there exists $k$-clustering $\mc C_{\mc S}$ which satisfies $\lambda$-center separation such that $m(\mc C_{\mc S}) = t$, $r(\mc C_{\mc S}) = r$ and the following holds. If $|\mc X\setminus \mc S|\ge \frac{3t}{2}+5$, then $\mc T$ doesn't capture $\mc C_{\mc S}$ .
+\end{theorem}
+
+\begin{theorem}
+\label{thm:nosparselistlambdacs}
+Given the number of clusters $k$ and parameters $r$ and $t$. For all $\lambda \le 6$ there exists $(\mc X, d)$ such that any list $\mc L$ (of clusterings of $\mc X$) has the following property. There exists $\mc S \subseteq \mc X$ and there exists clustering $\mc C_{\mc S}$ which satisfies $\lambda$-center separation such that $m(\mc C_{\mc S}) = t$, $r(\mc C_{\mc S}) = r$ and the following holds. If $|\mc L| < 2^{\frac{k}{2}}$ and $|\mc X \setminus \mc S|\ge \frac{k}{2}(\frac{3t(\mc C_{\mc S})}{2}+5)$, then $\mc L$ doesn't capture $\mc C_{\mc S}$.
+\end{theorem}
+
+
+
+
+
+
+
+
 
 
 %======================================================================
-\chapter{Sem-supervised Clustering}
+\chapter{Semi-supervised Clustering}
 \label{SSC}
 %======================================================================
-\section{Positive result}
-\section{Negative result}
+One of the challenge in clustering is under-specificity. The same dataset can admit multiple solutions depending upon the intended application. One approach to handle this issue is to incorporate domain knowledge via weak human supervision. Chapter \ref{RLW} discusses some of the approaches that researchers have taken to tackle this issue. Most of the approaches were mostly application oriented. The merge-split framework of Balcan et. al \cite{balcan2008clustering} did answer some theoretical questions but was somewhat unrealistic.
+
+In this chapter, we introduce a new framework of human-supervised clustering via same-cluster queries (Defn. \ref{defn:sameclusterquery}). An expert (or an oracle) is given two points and should answer whether the two points belong in the same or different cluster. This work has the potential for a lot of practical applications. Considering the clustering problem in a medical domain. While a doctor can't be expected to evaluate the clustering of a big dataset (as required in the merge-split framework), it is very reasonable to give him a few pairs of patients and ask if they belong to the same cluster or not (depending upon his application).
+
+Another surprising result is that access to few such answers can turn an otherwise NP hard clustering problem into a feasible one. We are not aware of such results in other domains. This result has the potential for applications in other domains of computer science. 
+
+\section{Clustering with same-cluster queries}
+\label{section:clusteringWithQuery}
+
+In this section we provide an efficient algorithm for clustering with queries. We assume that the oracle (or expert or human or user) has clustering in his mind which satisfies the $\gamma$-margin property (Defn. \ref{defn:gammamargin}). In addition the center of each cluster is the center of mass of the points in that cluster. Note that our algorithm, not only makes use of same-cluster queries but also cluster-assignment queries.  As discussed in Chapter \ref{METHOD}, the two are equivalent upto a factor of $k$. The use of cluster-assignment queries is mainly to make the algorithm description simpler.
+
+Our algorithm does the following. In the first phase, it tries to estimate the center of one of the clusters (say $C_p$). It does so by the help of cluster-assignment queries. In the second phase, the algorithm then tries to estimate the radius of $C_p$. Here, the algorithm makes use of the $\gamma$-margin property of the instances. After estimating the radius, the algorithm is able to recover all the points in the cluster $C_p$. It then deletes $C_p$ and repeats the process. 
+
+
+\RestyleAlgo{boxruled} 
+\SetAlgoNoLine
+\begin{algorithm}
+ \KwIn{Clustering instance $\mc X$, oracle $\mc O$, the number of clusters $k$ and parameter $\delta \in (0, 1)$}
+ \KwOut{A clustering $\mc C$ of the set $\mc X$}
+
+ \vspace{0.5em} $\mc C = \{\}$,
+ $\mc S_{1} = \mc X$,
+ $\eta = \beta \frac{\log k + \log(1/\delta)}{(\gamma-1)^4}$\\
+ \For{$i = 1$ to $k$}{
+ 	\vspace{0.5em}\textbf{Phase 1}\\
+ 	$l = k \eta + 1$\;
+	$Z \sim U^l[\mc S_i]$    \mbox{       } //   Draws $l$ independent elements from $\mc S_i$ uniformly at random\\
+	For $1 \le t \le i$,\\
+             \mbox{            } $Z_t = \{x \in Z : {\mc O}(x)= t\}.$ \mbox{    } //Asks cluster-assignment queries about the members of $Z$\\
+    % let $Z_t \subseteq \mc Z$ be the set of points with label $i$. That is, \begin{center}$A_t = \{x \in \mc Z : x \in C_t\}.$\end{center} 
+%	Choose any $Z_p$ such that $|Z_p| > \eta$.\\
+$p = \argmax_t |Z_t|$\\
+	$\mu_p' := \frac{1}{|Z_p|}\sum_{x \in Z_p} x$.\\
+
+	\vspace{0.5em}\textbf{Phase 2}\\
+    // We know that there exists $r_i$ such that $\forall x\in {\mc S_i}$, $x\in C_i \Leftrightarrow d(x, \mu^\prime_i)< r_i$.\\ 
+    // Therefore, $r_i$ can be found by simple binary search\\
+    
+	$\widehat{\mc S_i}$ = Sorted$(\{\mc S_i\})$ \mbox{       }// Sorts elements of $\{x: x\in \mc S_i\}$ in increasing order of $d(x, \mu_p')$.\\    
+	 $r_i = $ BinarySearch$(\widehat{\mc S_i})$ \mbox{      } //This step takes up to $O(\log|{\mc S_i}|)$ same-cluster queries\\
+
+
+%Binary search over $\widehat{\mc S_i}$, to find an index $idx$ such that $b_{idx} \in C_p$ and $b_{idx+1} \not\in C_p$. (This step involves making queries to the oracle $\mc O$).\\ %We will later prove that $d(b_{idx}, c_p') = \max_{x \in C_p}d(x, c_p')$.
+	$C_p' = \{x \in \mc S_i: d(x, \mu_p') \le r_i\}$.\\
+	$S_{i+1} = S_{i}\setminus C_p'$.\\
+	$\mc C = \mc C \cup \{C_p'\}$
+ }
+ \label{alg:steinerQueryPositive}
+ \caption{Algorithm for $\gamma(> 1)$-margin instances with queries}
+\end{algorithm}
+
+
+\begin{theorem}
+\label{thm:steinerQueryPositive}
+Let $(\mc X, d, C)$ be a clustering instance, where $C$ is center-based and satisfies the $\gamma$-margin property. Let $\mu_i$ be the center of mass of $C_i$.
+%Given a clustering instance $(\mc X, d)$ in some metric space $M$. Let $\mc C_{\mc X} = \{C_1, \ldots, C_k\}$ be a clustering of $\mc X$ induced by centers $\mu_1, \ldots, \mu_k \in M$ which satisfies $\gamma$-margin and $\mu_i$ is the mean of points in $C_i$. 
+Assume $\delta \in (0, 1)$ and $\gamma > 1$. Then with probability at least $1-\delta$, Algorithm \ref{alg:steinerQueryPositive} outputs $C$.
+\end{theorem}
+
+\begin{theorem}
+\label{thm:steinerQueryPositiveComplexity}
+Let the framework be as in theorem \ref{thm:steinerQueryPositive}. Then Algorithm \ref{alg:steinerQueryPositive} 
+\begin{itemize}
+\item Makes $O\big(k\log n + k^2\frac{\log k + \log (1/\delta)}{(\gamma - 1)^4}\big)$ same-cluster queries to the oracle $\mc O$.
+\item Runs in $O\big(kn\log n + k^2\frac{\log k + \log (1/\delta)}{(\gamma - 1)^4}\big)$ time.
+\end{itemize}
+\end{theorem}
+
+\section{Hardness Results}
+\label{section:lowerBounds}
+
+\subsection{Hardness of Euclidean $k$-means with Margin}
+
+Finding $k$-means solution without the help of an oracle is generally computationally hard. In this section, we will show that solving Euclidean $k$-means remains hard even if we know that the optimal solution satisfies the $\gamma$-margin property for $\gamma=\sqrt{3.4}$. In particular, we show the hardness for the case of $k=\Theta(n^\epsilon)$ for any $\epsilon\in (0,1)$.
+
+Given a set of instances $\mc X \subset \mb R ^d$, the $k$-means clustering problem is to find a clustering $\mc C = \{C_1, \ldots, C_k\}$ which minimizes $f(\mc C) = \sum\limits_{C_i} \min\limits_{\mu_i\in {\mb R}^d}\sum\limits_{x\in C_i} \|x - \mu_i \|_2^2$. The decision version of $k$-means is, given some value $L$, is there a clustering $\mc C$ with cost $\le L$? The following theorem is the main result of this section. 
+
+\begin{theorem}
+\label{thm:gammaLower}
+Finding the optimal solution to Euclidean $k$-means objective function is NP-hard when $k=\Theta(n^\epsilon)$ for any $\epsilon \in (0,1)$, even when the optimal solution satisfies the $\gamma$-margin property for $\gamma = \sqrt{3.4}$.
+\end{theorem}
+
+This results extends the hardness result of \cite{ben2014data} to the case of Euclidean 
+metric, rather than arbitrary one, and to the $\gamma$-margin condition (instead of the $\alpha$-center proximity there).
+
+\subsection{Lower Bound on the Number of Queries}
+In the previous section we showed that $k$-means clustering is NP-hard for $\gamma < \sqrt{3.4} \approx 1.84$ if the algorithm doesn't have access to any queries. On the other hand, if the algorithm has access to $O(k\log n)$ queries then the same problem ($k$-means clustering under $\gamma$-margin is easy. The following question arises. ``What happens if the algorithm has access to $o(k\log n)$ queries?" The theorem below shows that if the number of queries is $O(\log n)$ then the problem still remains NP-Hard.
+
+\begin{theorem}
+\label{thm:queryLower}
+For any $\gamma \le \sqrt{3.4}$, finding the optimal solution to the $k$-means objective function is NP-Hard even when the optimal clustering satisfies the $\gamma$-margin property and the algorithm can ask $O(\log k + \log |\mc X|)$ same-cluster queries.
+\end{theorem}
+
+
+
+
+
+
+
 
 
 %======================================================================
@@ -356,7 +780,61 @@ Balcan et. al \cite{balcan2008clustering} considered an interactive model of clu
 
 %=============================================================================
 
+
 \appendix
+\chapter{Comparison of $\gamma$-Margin and $\alpha$-Center Proximity}
+\section{Centers from data}
+\begin{theorem}
+\label{thm:upperCenterData}
+Let $(X , d)$ be a clustering instance and $\gamma \ge 2$. Then, Algorithm 1 in \cite{balcan2012clustering} outputs a tree $\mc T$ with the following property: 
+
+
+Any $k$-clustering $\mc C^* = \{C_1^*, \ldots, C_k^* \}$ which satisfies the $\gamma$-margin property and its cluster centers $\mu_1, \ldots, \mu_k$ are in $X$, is a pruning of the tree $T$. In other words, for every $1 \le i \le k$, there exists a node $N_i$ in the tree $T$ such that $C_i^* = N_i$.
+\end{theorem}
+
+\begin{proof}
+Let $p, p' \in C_i^*$ and $q \in C_j^*$. \cite{balcan2012clustering} prove the correctness of their algorithm for $\alpha > \sqrt{2} + 1$. Their proof relies only on the following three properties which are implied when $\alpha > \sqrt{2} + 1$. We will show that these properties are implied by $\gamma > 2$ instances as well.
+\begin{itemize}
+\item $d(p, \mu_i) < d(p, q)$\\
+$\gamma d(p, \mu_i) < d(q, \mu_i) < d(p, q) + d(p, \mu_i) \implies d(p, \mu_i) < \frac{1}{\gamma-1}d(p, q)$.
+\item $d(p, \mu_i) < d(q, \mu_i)$\\
+This is trivially true since $\gamma > 2$.
+\item $d(p, \mu_i) < d(p', q)$\\
+Let $r = \max_{x \in C_i^*} d(x, \mu_i)$. Observe that $d(p, \mu_i) < r$. Also, $d(p', q)> d(q, \mu_i)-d(p', \mu_i) > \gamma r - r = (\gamma -1)r$.
+\end{itemize}
+\end{proof}
+
+\begin{theorem}
+\label{thm:lowerCenterData}
+Let $(\mc X, d)$ be a clustering instance and $k$ be the number of clusters. For $\gamma < 2$, finding a $k$-clustering of $X$ which satisfies the $\gamma$-margin property and where the corresponding centers $\mu_1, \ldots, \mu_k$ belong to $\mc X$ is NP-Hard.
+\end{theorem}
+\begin{proof}
+For $\alpha < 2$, \cite{ben2014data} proved that in general metric spaces, finding a clustering which satisfies the $\alpha$-center proximity and where the centers $\mu_1, \ldots, \mu_k \in \mc X$ is NP-Hard. Note that the reduced instance in their proof, also satisfies $\gamma$-margin for $\gamma < 2$. 
+\end{proof}
+
+\section{Centers from metric space}
+\begin{theorem}
+\label{thm:upperCenterMetric}
+Let $(X , d)$ be a clustering instance and $\gamma \ge 3$. Then, the standard single-linkage algorithm outputs a tree $\mc T$ with the following property:
+
+
+Any $k$-clustering $\mc C^* = \{C_1^*, \ldots, C_k^* \}$ which satisfies the $\gamma$-margin property is a pruning of $T$. In other words, for every $1 \le i \le k$, there exists a node $N_i$ in the tree $T$ such that $C_i^* = N_i$. 
+\end{theorem}
+
+\begin{proof}
+\cite{balcan2008discriminative} showed that if a clustering $C^*$ has the strong stability property, then single-linkage outputs a tree with the required property. It is simple to see that if $\gamma > 3$ then instances have strong-stability and the claim follows.  
+\end{proof}
+
+
+\begin{theorem}
+\label{thm:lowerCenterMetric}
+Let $(\mc X, d)$ be a clustering instance and $\gamma < 3$. Then, finding a $k$-clustering of $X$ which satisfies the $\gamma$-margin is NP-Hard.
+\end{theorem}
+\begin{proof}
+\cite{awasthi2012center} proved the above claim but for $\alpha < 3$ instances. Note however that the construction in their proof satisfies $\gamma$-margin for $\gamma < 3$. 
+\end{proof}
+
+
 
 % Add a title page before the appendices and a line in the Table of Contents
 
