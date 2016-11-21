@@ -174,6 +174,7 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage[boxruled]{algorithm2e}
+\usepackage{enumitem}
 %\usepackage[round]{natbib}
 \usepackage{tikz}
 
@@ -187,6 +188,7 @@
 \newtheorem{proposition}{Proposition}
 \newtheorem{corollary}{Corollary}
 \newtheorem{note}{Note}
+\newtheorem{smallLemma}{Claim}
 
 \newcommand{\mc}{\mathcal}
 \newcommand{\mb}{\mathbf}
@@ -242,8 +244,16 @@ The task of clustering is challenging due to the following impediments.
 	
 	In practice, often heuristics are used. These heuristics are not guaranteed to find the optimal solution. Moreover, they can get stuck at locally optimal solutions. It is NP-Hard to approximate the optimal solution as well. 
 	
-	\item \emph{Under-specificity} - This is another major problem is clustering. One that has not received adequate attention from the research community. We mentioned in the previous section that the clustering problem is not precisely defined. The same dataset can be clustered in multiple different ways depending on the intended application. 
 	
+	\item \emph{Under-specificity} - This is another major problem is clustering. One that has not received adequate attention from the research community. We mentioned in the previous section that the clustering problem is not precisely defined. The same dataset can be clustered in multiple different ways depending on the intended application. 
+	\begin{figure}[!t]
+	\begin{center}
+	\includegraphics[trim={100 320 30 120},clip,width=0.8\textwidth]{figures/incompatible.pdf}
+	\end{center}
+	\caption{Under-specificity in clustering.}
+	\label{fig:laugh-cry}
+	\end{figure}
+
 	Lets consider a concrete example. Consider a dataset of images of faces of people (both male and female) with different emotions (eg. laughing and crying). This toy dataset is shown in Fig. \ref{fig:laugh-cry}. Now, this dataset has two `correct' $2$-clusterings. One clustering is when the males are in one cluster and the females are in another.. Second clustering is when people laughing are in one cluster and the people crying are in another cluster. Both these are reasonable choices. 
 	
 	However, without extra information, the algorithm doesn't know which one it should prefer. It is possible that the clustering outputted by the algorithm is not what the `user' or the application desired. This is problem of under-specificity which arises whenever multiple solutions are possible. 
@@ -525,7 +535,8 @@ Intuitively, Alg.~\ref{alg:alphacp} works as follows. It maintains a clustering 
 \caption{Alg. for $(\alpha, \eta)$-center proximity with parameter $t$}	
 \label{alg:alphacp}
 \end{algorithm}
-\vspace{-.1in}
+
+%\vspace{-.1in}
 \begin{theorem}
 \label{thm:alphacpnoise}
 Given a clustering instance $(\mc X, d)$ and a parameter $t$. Alg.~\ref{alg:alphacp} outputs a tree $\mc T$ with the following property. For all $k$, $\mc S \subseteq \mc X$ and for all $k$-clusterings $\mc C^*_{\mc S} = \{S_1^*, \ldots, S_k^*\}$ which satisfy $(2+\sqrt{7}, 1)$-center proximity the following holds. If $m(\mc C_{\mc S}^*) = t$ then $\mc T$ captures $\mc C_{\mc S}$.
@@ -746,6 +757,62 @@ Finding the optimal solution to Euclidean $k$-means objective function is NP-har
 This results extends the hardness result of \cite{ben2014data} to the case of Euclidean 
 metric, rather than arbitrary one, and to the $\gamma$-margin condition (instead of the $\alpha$-center proximity there).
 
+\subsubsection{Overview of the proof}
+
+Our method to prove Thm. \ref{thm:gammaLower} is based on the approach employed by \cite{vattani2009hardness}. However, the original construction proposed in \cite{vattani2009hardness} does not satisfy the $\gamma$-margin property. Therefore, we have to modify the proof by setting up the parameters of the construction more carefully. 
+
+To prove the theorem, we will provide a reduction from the problem of Exact Cover by 3-Sets (\textsc{X3C}) which is NP-Complete \cite{garey2002computers}, to the decision version of $k$-means.
+%(which given a real value $L$, asks whether a clustering with cost $\le L$ exists).
+
+\begin{definition}[\textsc{X3C}]
+Given a set $U$ containing exactly $3m$ elements and a collection $\mc S = \{S_1, \ldots, S_l\}$ of subsets of $U$ such that each $S_i$ contains exactly three elements, does there exist $m$ elements in $\mc S$ such that their union is $U$? 
+\end{definition}
+
+We will show how to translate each instance of X3C, $(U,\mc S)$, to an instance of $k$-means clustering in the Euclidean plane, $X$. In particular, $X$ has a grid-like structure consisting of $l$ rows (one for each $S_i$) and roughly $6m$ columns (corresponding to $U$) which are embedded in the Euclidean plane. The special geometry of the embedding makes sure that any low-cost $k$-means clustering of the points (where $k$ is roughly $6ml$) exhibits a certain structure. In particular, any low-cost $k$-means clustering could cluster each row in only two ways; One of these corresponds to $S_i$ being included in the cover, while the other means it should be excluded. We will then show that $U$ has a cover of size $m$ if and only if $X$ has a clustering of cost less than a specific value $L$. Furthermore, our choice of embedding makes sure that the optimal clustering satisfies the $\gamma$-margin property for $\gamma=\sqrt{3.4} \approx 1.84$.
+
+
+\subsubsection{Reduction design}
+Given an instance of X3C, that is the elements $U = \{1, \ldots, 3m\}$ and the collection $\mc S$, we construct a set of points $X$ in the Euclidean plane which we want to cluster. Particularly, $X$ consists of a set of points $H_{l,m}$ in a grid-like manner, and the sets $Z_i$ corresponding to $S_i$. In other words, $X = H_{l,m} \cup (\cup_{i=1}^{l-1} Z_i)$. 
+
+The set $H_{l,m}$ is as described in Fig. \ref{fig:lowerBoundComponent}. The row $R_i$ is composed of $6m + 3$ points $\{s_i, r_{i, 1}, \ldots, r_{i, 6m+1}, f_i\}$. Row $G_i$ is composed of $3m$ points $\{g_{i,1}, \ldots, g_{i, 3m}\}$. The distances between the points are also shown in Fig. \ref{fig:lowerBoundComponent}. Also, all these points have weight $w$, simply meaning that each point is actually a set of $w$ points on the same location.
+
+Each set $Z_i$ is constructed based on $S_i$. In particular, $Z_i = \cup_{j\in [3m]} B_{i,j}$, where $B_{i,j}$ is a subset of $\{x_{i,j},x_{i,j}',y_{i,j},y_{i,j}'\}$ and is constructed as follows: $x_{i,j} \in B_{i,j}$ iff $j \not\in S_i$, and $x_{i,j}' \in B_{i,j}$ iff $j \in S_i$. Similarly,  $y_{i,j} \in B_{i,j}$ iff $j \not\in S_{i+1}$, and $y_{i,j}' \in B_{i,j}$ iff $j \in S_{i+1}$. Furthermore, $x_{i, j}, x_{i,j}^\prime, y_{i,j}$ and $y_{i, j}^\prime$ are specific locations as depicted in Fig. \ref{fig:ZFig}. In other words, exactly one of the locations $x_{i,j}$ and $x_{i,j}^\prime$, and one of $y_{i,j}$ and $y_{i,j}^\prime$ will be occupied. We set the following parameters. 
+\vspace{-0.1in}
+\begin{align*}
+&h = \sqrt{5}, d = \sqrt{6}, \epsilon = \frac{1}{w^2}, \lambda = \frac{2}{\sqrt{3}}h, k = (l-1)3m + l(3m+2)\\
+& L_1 = (6m+3)wl, L_2 = 3m(l-1)w, L = L_1 + L_2 - m\alpha, \alpha = \frac{d}{w}-\frac{1}{2w^3}
+\end{align*}
+
+
+  \begin{figure}[!tbp]
+  \centering
+  \begin{minipage}[b]{0.49\textwidth}
+    \resizebox{\linewidth}{!}{\input{figures/lowerBdFig}}
+    \caption{Geometry of $H_{l,m}$. This figure is similar to Fig. 1 in \cite{vattani2009hardness}.  
+    Reading from letf to right, each row $R_i$ consists of a diamond ($s_i$), $6m+1$ bullets ($r_{i,1},\ldots,r_{i,6m+1}$), and another diamond ($f_i$). Each rows $G_i$ consists of $3m$ circles ($g_{i,1}, \ldots, g_{i,3m}$).}
+    \label{fig:lowerBoundComponent}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.49\textwidth}
+    \input{figures/ZFig}
+    \caption{The locations of $x_{i,j}$, $x_{i,j}'$, $y_{i,j}$ and $y_{i,j}'$ in the set $Z_i$. Note that the point $g_{i,j}$ is not vertically aligned with $x_{i, j}$ or $r_{i, 2j}$. This figure is adapted from \cite{vattani2009hardness}.}
+    \label{fig:ZFig}
+  \end{minipage}
+\end{figure}
+
+
+\begin{lemma}
+\label{lemma:kmeansEquivalenceX3C}
+The set $X = H_{l,n} \cup Z$ has a $k$-clustering of cost less or equal to $L$ if and only if there is an exact cover for the X3C instance.
+\end{lemma}
+
+\begin{lemma}
+\label{lemma:gammaLower}
+Any $k$-clustering of $X = H_{l,n} \cup Z$ with cost $\le L$ has the $\gamma$-margin property where $\gamma = \sqrt{3.4}$. Furthermore, $k = \Theta(n^{\epsilon})$.
+\end{lemma}
+
+The proofs are provided in Appendix \ref{appendix:lowerBoundProof}. Lemmas \ref{lemma:kmeansEquivalenceX3C} and \ref{lemma:gammaLower} together show that $X$ has a $k$-clustering of cost $\le L$ satisfying the $\gamma$-margin property (for $\gamma = \sqrt{3.4}$) if and only if there is an exact cover by $3$-sets for the X3C instance. This completes the proof of our main result (Thm. \ref{thm:gammaLower}). 
+
 \subsection{Lower Bound on the Number of Queries}
 In the previous section we showed that $k$-means clustering is NP-hard for $\gamma < \sqrt{3.4} \approx 1.84$ if the algorithm doesn't have access to any queries. On the other hand, if the algorithm has access to $O(k\log n)$ queries then the same problem ($k$-means clustering under $\gamma$-margin is easy. The following question arises. ``What happens if the algorithm has access to $o(k\log n)$ queries?" The theorem below shows that if the number of queries is $O(\log n)$ then the problem still remains NP-Hard.
 
@@ -753,6 +820,13 @@ In the previous section we showed that $k$-means clustering is NP-hard for $\gam
 \label{thm:queryLower}
 For any $\gamma \le \sqrt{3.4}$, finding the optimal solution to the $k$-means objective function is NP-Hard even when the optimal clustering satisfies the $\gamma$-margin property and the algorithm can ask $O(\log k + \log |\mc X|)$ same-cluster queries.
 \end{theorem}
+
+\begin{proof}
+Proof by contradiction: assume that there is polynomial-time algorithm $\mc A$ that makes $O(\log k + \log |\mc X|)$ same-cluster queries to the oracle. Then, we show there exists another algorithm $\mc A^\prime$ for the same problem that is still polynomial but uses no queries. However, this will be a contradiction to Theorem \ref{thm:gammaLower}, which will prove the result.
+
+In order to prove that such $\mc A^\prime$ exists, we use a `simulation' technique. Note that $\mc A$ makes only $q<\beta(\log k + \log |\mc X|)$ binary queries, where $\beta$ is a constant. The oracle therefore can respond to these queries in maximum $2^{q} < k^\beta|\mc X|^\beta$ different ways. Now the algorithm $\mc A^\prime$ can try to simulate all of $k^\beta|\mc X|^\beta$ possible responses by the oracle and output the solution with minimum $k$-means clustering cost. Therefore, $\mc A^\prime$ runs in polynomial-time and is equivalent to $\mc A$.
+\end{proof}
+
 
 
 
@@ -774,7 +848,7 @@ We have discussed the computational challenges in clustering. The way around thi
 
 A lot the datasets in practice that we wish to cluster should satisfy this assumption. If a generative model is available, then data generated from that model should satisfy the clusterability assumption with high probability. Most of the notions in literature don't satisfy any of these conditions.
 
-For our notion of sparse noise, we do provide some justification when the noise is generated by a non-concentrated distribution (Chapter \ref{fixme}). Our definition is much less restrictive than previous definitions and `seems' to be realistic. However, to truly satisfy this criteria, we need to answer the following question. 
+For our notion of sparse noise, we do provide some justification when the noise is generated by a non-concentrated distribution (Chapter \ref{ANALYSIS}). Our definition is much less restrictive than previous definitions and `seems' to be realistic. However, to truly satisfy this criteria, we need to answer the following question. 
 \begin{itemize}
 \item Can we find atleast a few datasets that satisfy our criteria?
 \item Can we find some generative models which generate data satisfying sparse noise condition?
@@ -782,7 +856,7 @@ For our notion of sparse noise, we do provide some justification when the noise 
 
 \item \emph{Efficient algorithms}
 
-Another important requirement is that if the data is clusterable then there should exist efficient algorithms which find that clustering. For our notion of sparse noise, we proposed an algorithm which finds efficient representation of all nice solutions (Chapter \ref{fixme}). We also give conditions under which finding all solutions is not possible. However, some questions still remain unanswered. \begin{itemize}
+Another important requirement is that if the data is clusterable then there should exist efficient algorithms which find that clustering. For our notion of sparse noise, we proposed an algorithm which finds efficient representation of all nice solutions (Chapter \ref{ANALYSIS}). We also give conditions under which finding all solutions is not possible. However, some questions still remain unanswered. \begin{itemize}
 \item What if the goal is to find only one such nice solution and not to represent all nice solutions?
 \item Is it possible to propose a clustering objective which finds the nice solution if the data is clusterable? 
 \end{itemize}
@@ -898,6 +972,239 @@ Let $(\mc X, d)$ be a clustering instance and $\gamma < 3$. Then, finding a $k$-
 \end{proof}
 
 
+
+
+
+
+
+
+\chapter{Proofs of missing lemmas and theorems from Chapter \ref{ANALYSIS}}
+\textbf{Proof of Theorem~\ref{thm:alphacpnoise}}
+Fix any $\mc S \subseteq \mc X$. Let $\mc C^*_S = \{S_1^*, \ldots, S_k^*\}$ be a clustering of $\mc S$ such that $m(\mc C_{\mc S}^*) = t$ and $\mc C^*_S$ has $(\alpha, \eta)$-center proximity. Denote by $r_i := r(S_i^*)$ and $r = \max r_i$. Define $Y_B^{\mc C} := \{C_i \in \mc C : C_i \subseteq B \text{ or } |B \cap C_i| \ge t/2\}$. Note that whenever a ball $B$ satisfies the sparse-distance condition, all the clusters in $Y_{B}^{{\mc C}^{(l)}}$ are merged together and the clustering $\mc C^{(l+1)}$ is updated. We will prove the theorem by proving two key facts.
+
+\begin{enumerate}[label=\textbf{F.\arabic*},leftmargin=0.3in]
+\renewcommand\labelitemi{$\diamond$}
+\item \label{fact:1} If the algorithm merges points from a good cluster $S_i^*$ with points from some other good cluster,  then at this step the distance being considered $d = d(p,q) > r_i$.	
+\item \label{fact:2} When the algorithm considers the distance $d = r_i$, it merges all points from $S_i^*$ (and possibly points from $\mc X\setminus \mc S$) into a single cluster $C_i$. Hence, there exists a node in the tree $N_i$ which contains all the points from $S_i^*$ and no points from any other good cluster $S_j^*$. 	
+\end{enumerate}
+Note that the theorem follows from these two facts. Similar reasoning was also used in proof of Lemma 3 in \cite{balcan2012clustering}. We now prove both of these facts formally. 
+
+\noindent\textit{\underline{Proof of Fact.~\ref{fact:1}}}
+Let $\mc C^{(l)} = \{C_1, \ldots, C_{k'}\}$ be the current clustering of $\mc X$. Let $l+1$ be the first merge step which merges points from the good cluster $S_i^*$ with points from some other good cluster. Let $p, q \in \mc X$ be the pair of points being considered at this step and $B = B(p, d(p, q))$ the ball that satisfies the sparse distance condition at this merge step. Denote by $Y = Y_{B}^{C^{(l)}}$. We need to show that $d(p, q) > r_i$. To prove this, we need Claim~\ref{claim:fromBothCluster} below. 
+
+\begin{smallLemma}
+\label{claim:fromBothCluster}
+Let $p, q \in \mc X$ and $B$, $Y$, $S_i^*$ and $C^{(l)}$ be as defined above. If $d(p, q) \le r,$ then $B \cap S_i^* \neq \emptyset$ and there exists $n \neq i$ such that $B \cap S_n^* \neq \emptyset$.
+\end{smallLemma}
+\vspace{-0.1in} $l+1$ is the first step which merges points from $S_i^*$ with some other good cluster. Hence, $\exists C_i \in Y$ such that $C_i\cap S_i^*  \neq \emptyset$ and $\forall n \neq i$, $C_i \cap S_n^* = \emptyset$. Also, $\exists C_j \in Y$ such that $C_j \cap S_j^* \neq \emptyset$ for some $S_j^*$ and $C_j \cap S_i^* = \emptyset$.
+
+$C_i \in Y$. Hence, $C_i \subseteq B$ or $|C_i \cap B| \ge t/2$. The former is trivial. In the latter, for the sake of contradiction, assume that $B$ contains no points from $S_i^*$. This implies that $B \cap C_i \subseteq B \cap \{\mc X \setminus \mc S\}$ and $|B\cap \{\mc X \setminus \mc S\}| \ge t/2$. This  is a contradiction. The case when $C_j \in Y$ is identical. \qed
+
+\begin{smallLemma}
+\label{claim:maxrirj}
+Let the framework be as given in Claim~\ref{claim:fromBothCluster}. Then, $d(p, q) > r_i$.
+\end{smallLemma}
+
+\vspace{-0.1in} \noindent If $d(p, q) > r$, then the claim follows trivially. In the other case, from Claim~\ref{claim:fromBothCluster}, $B$ contains $p_i \in S_i^*$ and $p_j \in S_j^*$. Let $r_i = d(c_i, q_i)$ for some $q_i \in S_i^*$.
+
+$d(c_i, q_i) < \frac{1}{\alpha} d(q_i, c_j) < \frac{1}{\alpha} [ \frac{1}{\alpha}d(p_i, p_j) + \frac{1}{\alpha}d(c_i, q_i) + d(p_i, p_j) + 2d(c_i, q_i)]$
+This implies that $(\alpha^2 - 2\alpha - 1)d(q_i, c_i) < (\alpha + 1) d(p_i, p_j)$. For $\alpha \ge 2 + \sqrt 7$, this implies that $d(c_i, q_i) < d(p_i, p_j)/2$ which implies $d(c_i, q_i) < d(p, q)$. This result was also stated in \cite{balcan2012clustering}.\qed
+
+\noindent\textit{\underline{Proof of Fact \ref{fact:2}
+}}
+Let $\mc C^{(l)} = \{C_1, \ldots, C_{k'}\}$ be the current clustering of $\mc X$. Let $l+1$ be the merge step when $p = s_i$ and $q = q_i$ such that $d(s_i, q_i) = r_i$. We will prove that the ball $B = B(s_i, q_i)$ satisfies the sparse-distance condition.
+
+\begin{smallLemma}
+%\vspace{-0.1in}
+\label{claim:dciqi}
+Let $s_i$, $q_i$, $r_i$, $B$ and $Y$ be as defined above. Then, $B$ satisfies the sparse distance condition and for all $C \in Y$, for all $j \neq i, C \cap S_j^* = \emptyset$.
+\end{smallLemma}
+\vspace{-0.1in} $|B| = |S_i^*| \ge t$. Observe that, for all $C \in \mc C^{(l)}$, $|C| = 1$ or $|C| \ge t$. 
+
+\begin{itemize}[nolistsep,leftmargin=*]
+\item Case 1. $|C| = 1$. If $C \cap B \neq \emptyset \implies C \subseteq B = S_i^*$.
+\item Case 2. $|C|\ge t$. $C \cap B \neq \emptyset$. Let $h(C)$ denote the height of the cluster in the tree $T$. 
+\begin{itemize}[leftmargin=*]
+\renewcommand\labelitemii{$\circ$}
+\item Case 2.1. $h(C) = 1$. In this case, there exists a ball $B'$ such that $B' = C$. We know that $r(B') \le r_i \le r$. Hence using Claim~\ref{claim:maxrirj}, we get that for all $j \neq i$, $B' \cap S_j^* = \emptyset$. Thus, $|B'\setminus S_i^*| \le t/2 \implies |B\cap C| = |C| - |C\setminus B| = |C| - |B'\setminus S_i^*| \ge t/2$. Hence, $C \in Y$.
+
+\item Case 2.2. $h(C) > 1$. Then there exists some $C'$ such that $h(C') = 1$ and $C' \subset C$. Now, using set inclusion and the result from the first case, we get that $|B\cap C| \ge |B\cap C'| \ge t/2$. Hence, $C \in Y$. Using Claim~\ref{claim:maxrirj}, we get that for all $j \neq i$, $C \cap S_j^* = \emptyset$.\qed\\
+\end{itemize} 
+\end{itemize}
+
+
+\noindent\textbf{Proof of Theorem~\ref{thm:noalgalphacp}}
+Let $\mc X, B_1, B_2, B_1', B_2'$ be as shown in Fig. \ref{fig:noalgalphacp}. Let $t_1 = \frac{t}{2}+1$ and $t_2 = \frac{t}{2}-2$. For $\alpha \le 2+\sqrt{3}$, clusterings $\mc C_{\mc S} = \{B_1, B_2, B_3, \ldots, B_k\}$ and $\mc C_{\mc S'} = \{\ B_1', B_2', B_3, \ldots, B_k\}$ satisfy $(\alpha, 1)$-center proximity and $m(\mc C_{\mc S}) = m(\mc C_{\mc S}') = t$. Now, a simple proof by contradiction shows that there doesn't exist a tree $T$ and prunings $P$ and $P'$ such that $P$ respects $\mc C_{\mc S}$ and $P'$ respects $\mc C_{\mc S'}$. \qed\\
+
+\begin{figure}[!t]
+\begin{center}
+\includegraphics[trim={47mm 205mm 12mm 44mm},clip,width=\textwidth]{figures/lbdFig2.pdf}
+\end{center}
+\caption{$\mc X \subseteq \mathbb{R}$ such that no tree can capture all the $(\alpha, \eta)$-proximal clusterings.}
+\label{fig:noalgalphacp}
+\end{figure}
+
+\noindent\textbf{Proof of Theorem~\ref{thm:nolistalphacp}}
+The clustering instance $\mc X$ is an extension of Fig. \ref{fig:noalgalphacp}. Let  \\$G_1 = \{B_1, B_1', B_2, B_2'\}$ be the balls as in Fig. \ref{fig:noalgalphacp}. Now, construct $G_2 = \{B_3, B_3', B_4, B_4'\}$ exactly identical to $G_1$ but far. In this way, we construct $k/2$ copies of $G_1$. \qed\\
+
+\noindent\textbf{Proof of Theorem~\ref{thm:nosparsealg}}
+Let $\mc X \subseteq \mathbb{R}$ be as shown in Fig. \ref{fig:nosparsealg}. Let $t' = \frac{t}{2}-1$ and let $B_1, B_2, B_3, B_1'$, $B_2', B_3', B_1'', B_2''$ and $B_3''$ be as shown in Fig.~\ref{fig:nosparsealg}. For $\alpha \le 2\sqrt{2}+3$, clusterings \\$\mc C_{\mc S} = \{B_1, B_2, B_3, \ldots, B_k\}$, $\mc C_{\mc S'} = \{\ B_1', B_2', B_3, \ldots, B_k\}$ and $\mc C_{\mc S}'' = \{\ B_1'', B_2'', B_3, \ldots, B_k\}$ satisfy $(\alpha, 1)$-center proximity. Also, $m(\mc C_{\mc S}) = m(\mc C_{\mc S}') =$ $m(\mc C_{\mc S}'') = t$. Arguing similarly as in Theorem \ref{thm:noalgalphacp} completes the proof. \qed\\
+\begin{figure}[!t]
+\begin{center}
+\includegraphics[trim={45mm 210mm 20mm 43mm},clip,width=\textwidth]{figures/lbdFig3.pdf}
+\end{center}
+\caption{$\mc X \subseteq \mathbb{R}$ such that no algorithm can capture all the $\alpha$-proximal clusterings. } 
+\label{fig:nosparsealg}
+\end{figure}
+
+\noindent\textbf{Proofs of Theorems~\ref{thm:nosparselistalphacp}, \ref{thm:nosparselistlambdacs} and \ref{thm:nolistlambdacs}} have the exact same ideas as the proof of Theorem~\ref{thm:nolistalphacp}. To prove the lower bound in the list model, instance constructed in Theorem~\ref{thm:nolistalphacp} is a simple extension of the instance in Theorem~\ref{thm:noalgalphacp}. The instances for the proof of Theorems~\ref{thm:nosparselistalphacp}, \ref{thm:nosparselistlambdacs} and \ref{thm:nolistlambdacs} are similarly constructed as extensions of their respective tree lower bound instances (Theorems~\ref{thm:nosparsealg}, \ref{thm:nosparselambdaalg} and \ref{thm:noalglambdacs}).
+
+\noindent\textbf{Proof of Theorems~\ref{thm:nosparselambdaalg} and \ref{thm:noalglambdacs}} are also identical to the proofs of Theorem~\ref{thm:nosparsealg} and \ref{thm:noalgalphacp}.\\
+
+\noindent\textbf{Proof of Theorem~\ref{thm:lambdacsnoise}}
+Fix $\mc S \subseteq \mc X$. Denote by $r_i := r(S_i^*)$. Let $\mc C_{\mc X} = \{C_1, \ldots, C_k\}$ be the clustering outputed by the algorithm. Let $\mc L = \{B_1, \ldots, B_l\}$ be the list of balls as outputed by Phase 1 of Alg.~\ref{alg:lambdacs}. Let $G$ be the graph as constructed in Phase 2 of the algorithm. Observe that $B = B(s_i, r_i) = S_i^* \in \mc L$. WLOG, denote this ball by $B^{(i)}$ and the corresponding vertex in the graph $G$ by $v^{(i)}$. We will prove the theorem by proving two key facts.  
+
+\begin{enumerate}[nolistsep,noitemsep,label=\textbf{F.\arabic*},leftmargin=0.3in]
+\renewcommand\labelitemi{$\diamond$}
+\item \label{fact:lambda1} If $B_{i1}$ and $B_{i2}$ intersect $S_i^*$ then the vertices $v_{i1}$ and $v_{i2}$ are connected.
+\item \label{fact:lambda2} If $B_{i1}$ intersects $S_i^*$ and $B_{j1}$ intersects $S_j^*$ then $v_{i1}$ and $v_{j1}$ are disconnected in $G$.	
+\end{enumerate}
+
+\vspace{-0.1in}
+\begin{smallLemma}
+\label{claim:lambda1}
+Let $\mc L, G, B^{(i)}$ and $v^{(i)}$ be as defined above. Let balls $B_{i1}, B_{i2} \in \mc L$ be such that $B_{i1} \cap S_i^* \neq \emptyset$ and $B_{i2} \cap S_i^* \neq \emptyset$. Then there exists a path between $v_{i1}$ and $v_{i2}$.
+\end{smallLemma}
+\vspace{-0.1in} Assume that $v_{i1}$ and $v^{(i)}$ are not connected by an edge. Hence, $|B_{i1} \setminus B^{(i)}| \ge t/2$. Since $\lambda > 4$, for all $j \neq i$, $B_{i1} \cap S_j^* = \emptyset$. Thus, $B_{i1} \setminus B^{(i)} \subseteq \mc X \setminus \mc S$. which contradicts $|B_{i1} \cap \{\mc X \setminus \mc S\}| < t/2$.\qed
+
+%\vspace{-0.1in}
+\begin{smallLemma}
+Let the framework be as in Claim~\ref{claim:lambda1}. Let $B_{i1} \in \mc L$ be such that $B_{i1} \cap S_i^* \neq \emptyset$ and $B_{j1}$ be such that $B_{j1} \cap S_j^* \neq \emptyset$. Then $v_{i1}$ and $v_{j1}$ are disconnected in $G$.
+\end{smallLemma}
+\vspace{-0.1in} Assume that $v_{i1}$ and $v_{j1}$ are connected. Hence, there exists vertices $v_{i}$ and $v_{n}$ such that $v_i$ and $v_n$ are connected by an edge in $G$ and $B_i \cap S_i^* \neq \emptyset$ and $B_n \cap S_n^* \neq \emptyset$ for some $n \neq i$. $|B_i \cap B_n| \ge t/2$. Now, $\lambda \ge 4$, thus $B_i \cap \{\mc S \setminus S_i^*\} = \emptyset$ and $B_n \cap \{\mc S\setminus S_n^*\} = \emptyset$. Thus, $B_i \cap B_n \subseteq \mc X \setminus \mc S$ which contradicts the sparseness assumption.
+\qed
+
+\label{appendix:sectiontr}
+\begin{theorem}[Vapnik and Chervonenkis \cite{vapnik2015uniform}]\label{theorem:vceapprox}
+Let $X$ be a domain set and $D$ a probability distribution over $X$. Let $H$ be a class of subsets of $X$ of finite VC-dimension $d$. Let $\epsilon, \delta \in (0,1)$. Let $S \subseteq X$ be picked i.i.d according to $D$ of size $m$. If $m > \frac{c}{\epsilon^2}(d\log \frac{d}{\epsilon}+\log\frac{1}{\delta})$, then  with probability $1-\delta$ over the choice of $S$, we have that $\forall h \in H$
+$$\bigg|\frac{|h\cap S|}{|S|} - P(h)\bigg| < \epsilon$$
+\end{theorem}
+
+
+
+
+
+
+
+\chapter{Proofs of missing lemmas and theorems from Chapter \ref{SSC}}
+\label{appendix:lowerBoundProof}
+
+In Section \ref{section:lowerBounds} we proved Theorem \ref{thm:gammaLower} based on two technical results (i.e., lemma \ref{lemma:kmeansEquivalenceX3C} and \ref{lemma:gammaLower}). In this appendix we provide the proofs for these lemmas. In order to start, we first need to establish some properties about the Euclidean embedding of $X$ proposed in Section \ref{section:lowerBounds}.
+
+%$$L_1 = (6m+3)w, L_2 = 6m(l-1), L=L_1 + L_2, \alpha = \frac{d}{w}-\frac{1}{2w^3}$$
+
+\begin{definition}[$A$- and $B$-Clustering of $R_i$]
+\label{defn:abclusteringVattani}
+
+An $A$-Clustering of row $R_i$ is a clustering in the form of $\{\{s_i\}, \{r_{i,1}, r_{i,2}\}, \{r_{i,3}, r_{i,4}\}, \ldots,$ $ \{r_{i,6m-1}, r_{i,6m}\},\{r_{i, 6m+1}, f_i\}\}$. A $B$-Clustering of row $R_i$ is a clustering in the form of $\{\{s_i, r_{i, 1}\}, \{r_{i,2}, r_{i,3}\}, \{r_{i,4}, r_{i,5}\}, \ldots,$ $ \{r_{i,6m}, r_{i,6m+1}\},\{f_i\}\}$. 
+\end{definition}
+
+\begin{definition}[Good point for a cluster]
+\label{defn:goodPointVattani}
+A cluster $C$ is good for a point $z \not\in C$ if adding $z$ to $C$ increases cost by exactly $\frac{2w}{3}h^2$ 
+\end{definition}
+
+Given the above definition, the following simple observations can be made. 
+\begin{itemize}[nolistsep,noitemsep]
+\item The clusters $\{r_{i,2j-1}, r_{i, 2j}\}$, $\{r_{i,2j}, r_{i, 2j+1}\}$ and $\{g_{i,j}\}$ are good for $x_{i,j}$ and $y_{i-1,j}$.
+\item The clusters $\{r_{i,2j}, r_{i, 2j+1}\}$ and $\{g_{i,j}\}$ are good for $x_{i,j}'$ and $y_{i-1,j}'$.
+\end{itemize}
+
+\begin{definition}[Nice Clustering]
+\label{defn:niceClustering}
+A $k$-clusteirng is nice if every $g_{i,j}$ is a singleton cluster, each $R_i$ is grouped in the form of either an $A$-clustering or a $B$-clustering, and each point in $Z_i$ is added to a cluster which is good for it.
+\end{definition}
+
+It is straightforward to see that a row grouped in a $A$-clustering costs $(6m+3)w-\alpha$ while a row in $B$-clustering costs $(6m+3)w$. Hence, a nice clustering of $H_{l,m} \cup Z$ costs at most $L_1 + L_2$. More specifically, if $t$ rows are group in a $A$-clustering, the nice-clustering costs $L_1+L_2-t\alpha$. Also, observe that any nice clustering of $X$ has only the following four different types of clusters. \begin{enumerate}[label=(\arabic*),nolistsep,leftmargin=*]
+\item Type E - $\{r_{i,2j-1}, r_{i,2j+1}\}$ \\
+The cost of this cluster is $2w$ and the contribution of each location to the cost (i.e., $\frac{cost}{\#locations}$) is $ \frac{2w}{2} = w$.
+\item Type F - $\{r_{i,2j-1}, r_{i, 2j}, x_{i, j}\}$ or $\{r_{i,2j-1}, r_{i, 2j}, y_{i-1, j}\}$ or $\{r_{i,2j}, r_{i, 2j+1}, x_{i, j}'\}$ or $\{r_{i,2j}, r_{i, 2j+1}, y_{i-1, j}'\}$\\
+The cost of any cluster of this type is $2w(1+\frac{h^2}{3})$ and the contribution of each location to the cost is at most $\frac{2w}{9}(h^2+3)$. This is equal to $\frac{16}{9}w$ because we had set $h = \sqrt 5$.
+\item Type I - $\{g_{i, j}, x_{i,j}\}$ or $\{g_{i, j}, x_{i,j}'\}$  or $\{g_{i, j}, y_{i,j}\}$  or $\{g_{i, j}, y_{i,j}'\}$\\
+The cost of any cluster of this type is $\frac{2}{3}wh^2$ and the contribution to the cost of each location is $\frac{w}{3}h^2$. For our choice of $h$, the contribution is $\frac{5}{3}w$.
+\item Type J - $\{s_i, r_{i,1}\}$ or $\{r_{i,6m+1}, f_i\}$\\
+The cost of this cluster is $3w$ (or $3w-\alpha$) and the contribution of each location to the cost is at most $1.5w$. 
+\end{enumerate}
+Hence, observe that in a nice-clustering, any location contributes at most $\le \frac{16}{9}w$ to the total clustering cost. This observation will be useful in the proof of the lemma below.
+
+\begin{lemma}
+\label{lemma:costNonNice}
+For large enough $w = poly(l, m)$, any non-nice clustering of $X = H_{l, m} \cup Z$ costs at least $L + \frac{w}{3}$.
+\end{lemma}
+
+\begin{proof}
+We will show that any non-nice clustering $C$ of $X$ costs at least $\frac{w}{3}$ more than any nice clustering. This will prove our result. The following cases are possible.
+
+\begin{itemize}[nolistsep,leftmargin=*]
+\item $C$ contains a cluster $C_i$ of cardinality $t > 6$ (i.e., contains $t$ weighted points)\\
+Observe that any $x \in C_i$ has at least $t-5$ locations at a distance greater than 4 to it, and $4$ locations at a distance at least $2$ to it. Hence, the cost of $C_i$ is at least $\frac{w}{2t}(4^2(t-5)+2^24)t = 8w(t-4)$. $C_i$ allows us to use at most $t-2$ singletons. This is because a nice clustering of these $t+(t-2)$ points uses at most $t-1$ clusters and the clustering $C$ uses  $1 + (t-2)$ clusters for these points. The cost of the nice cluster on these points is $\le \frac{16w}{9}2(t-1)$. While the non-nice clustering costs at least $8w(t-4)$. For $t \ge 6.4 \implies 8(t-4) > \frac{32}{9}(t-1)$ and the claim follows. Note that in this case the difference in cost is at least $\frac{8w}{3}$. 
+
+\item Contains a cluster of cardinality $t = 6$\\
+Simple arguments show that amongst all clusters of cardinality $6$, the following has the minimum cost. $C_i = \{r_{i, 2j-1}, r_{i, 2j}, x_{i,j}, y_{i-1, j}, r_{i, 2j+1}, r_{2j+2}\}$. The cost of this cluster is $\frac{176w}{6}$. Arguing as before, this allows us to use $4$ singletons. Hence, a nice cluster on these $10$ points costs at most $\frac{160w}{9}$. The difference of cost is at least $34w$.  
+
+\item Contains a cluster of cardinality $t = 5$\\
+Simple arguments show that amongst all clusters of cardinality $5$, the following has the minimum cost. $C_i = \{r_{i, 2j-1}, r_{i, 2j}, x_{i,j}, y_{i-1, j}, r_{i, 2j+1}\}$. The cost of this cluster is $16w$. Arguing as before, this allows us to use $3$ singletons. Hence, a nice cluster on these $8$ points costs at most $16w\frac{8}{9}$. The difference of cost is at least $\frac{16w}{9}$.  
+
+\item Contains a cluster of cardinality $t = 4$\\
+It is easy to see that amongst all clusters of cardinality $4$, the following has the minimum cost. $C_i = \{r_{i, 2j-1}, r_{i, 2j}, x_{i,j}, r_{i, 2j+1}\}$. The cost of this cluster is $11w$. Arguing as before, this allows us to use $2$ singletons. Hence, a nice cluster on these $6$ points costs at most $\frac{32w}{3}$. The difference of cost is at least $\frac{w}{3}$.
+
+\item All the clusters have cardinality $\le 3$ \\
+Observe that amongst all non-nice clusters of cardinality $3$, the following has the minimum cost. $C_i = \{r_{i, 2j-1}, r_{i, 2j}, r_{i, 2j+1}\}$. The cost of this cluster is $8w$. Arguing as before, this allows us to use at most $1$ more singleton. Hence, a nice cluster on these $4$ points costs at most $\frac{64w}{9}$. The difference of cost is at least $\frac{8w}{9}$.
+
+It is also simple to see that any non-nice clustering of size $2$ causes an increase in cost of at least $w$.
+
+\end{itemize}
+\end{proof}
+
+%\begin{lemma}
+%\label{lemma:kmeansEquivalenceX3C}
+%The set $X = H_{l,n} \cup Z$ has a $k$-clustering %of cost less or equal to $L$ if and only if there %is an exact cover for the X3C instance.
+%\end{lemma}
+\begin{proof}[Proof of lemma \ref{lemma:kmeansEquivalenceX3C}]
+The proof is identical to the proof of Lemma 11 in \cite{vattani2009hardness}. Note that the parameters that we use are different with those utilized by \cite{vattani2009hardness}; however, this is not an issue, because we can invoke our lemma \ref{lemma:costNonNice} instead of the analogous result in Vattani (i.e., lemma 10 in Vattani's paper). The sketch of the proof is that based on lemma \ref{lemma:costNonNice}, only nice clusterings of $X$ cost $\le L$. On the other hand, a nice clustering corresponds to an exact 3-set cover. Therefore, if there exists a clustering of $X$ of cost $\le L$, then there is an exact 3-set cover. The other way is simpler to proof; assume that there exists an exact 3-set cover. Then, the corresponding construction of $X$ makes sure that it will be clustered \emph{nicely}, and therefore will cost $\le L$.  
+
+
+
+ %argue why the only nice clusterings of $X$ cost $\le L$. We use Lemma \ref{lemma:costNonNice} to argue the same. Note that since the parameters are much different that those considered in Vattani's original construction, we need to argue much more carefully to prove Lemma \ref{lemma:costNonNice}. 
+\end{proof}
+
+%\begin{lemma}
+%\label{lemma:gammaLower}
+%Any clustering of $X = H_{l,n} \cup Z$ which has %cost$\le L$ has the $\gamma$-margin property where %$\gamma = \sqrt{\frac{17}{5}} \approx 1.84$.
+%\end{lemma}
+\begin{proof}[Proof of lemma \ref{lemma:gammaLower}]
+As argued before, any nice clustering has four different types of clusters. We will calculate the minimum ratio $a_i = \frac{d(y, \mu)}{d(x, \mu)}$ for each of these clusters $C_i$ (where $x \in C_i$, $y \not\in C_i$ and $\mu$ is mean of all the points in $C_i$.) Then, the minimum $a_i$ will give the desired $\gamma$. 
+\begin{enumerate}[label=(\arabic*),nolistsep,leftmargin=*]
+\item For Type E clusters $a_i = h/1 = \sqrt{5}$. 
+\item For Type F clusters. $a_i = \frac{\frac{\sqrt{4+16(h^2-1)}}{3}}{2h/3} = \sqrt{\frac{17}{5}} \approx 1.84$. 
+\item For Type I clusters, standard calculation show that $a_i > 2$.
+\item For Type J clusters $a_i = \frac{2+\frac{\sqrt{6}}{2}}{\frac{\sqrt{6}}{2}} > 2$.
+\end{enumerate}
+
+\noindent Furthurmore, $|\mc X| = (12lm + 3l -6m)w$ and $k = 6lm + 2l - 3m$. Hence for $w = $poly$(l, m)$ our hardness result holds for $k = |\mc X|^{\epsilon}$ for any $0 < \epsilon < 1$.
+\end{proof}
+\noindent Lemmas \ref{lemma:kmeansEquivalenceX3C} and \ref{lemma:gammaLower} complete the proof of the main result (Thm. \ref{thm:gammaLower}). 
+
+
+%================================================
+%================================================
+%================================================
+
+\begin{theorem}[Generalized Hoeffding's Inequality (e.g., \cite{ashtiani2015dimension})]
+\label{thm:genHoeff}
+Let $X_1, \ldots. X_n$ be i.i.d random vectors in some Hilbert space such that for all $i$, $\|X_i\|_2 \le R$ and $E[X_i] = \mu$. If $n > c\frac{\log(1/\delta)}{\epsilon^2}$, then with probability atleast $1-\delta$, we have that
+$$\Big\|\mu - \frac{1}{n}\sum X_i\Big\|_2^2 \le R^2\epsilon$$ 
+\end{theorem}
 
 % Add a title page before the appendices and a line in the Table of Contents
 

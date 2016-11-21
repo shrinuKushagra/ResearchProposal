@@ -61,7 +61,15 @@
 % ---------------
 
 \begin{center}\textbf{Abstract}\end{center}
-TODO
+Clustering is a commonly applied machine learning task. The goal is to partition the data into `well-separated' subsets of `similar' instances. However, notions of well-separatedness and similarity are only vaguely defined. The task of clustering is not only computationally expensive but also under-specified. Often, there are multiple intuitive ways to cluster the same dataset and the clustering of choice depends on the intended application. In this research, we are looking to tackle both these challenges. 
+
+We consider efficient clustering algorithm under data clusterability assumptions with added noise. Most literature on this topic that considers either the adversarial noise setting or some noise generative model. However, we examine a realistically motivated setting in which the only restriction about the noisy part of the data is that it does not create significantly large ``clusters". Another aspect in which our model deviates from common approaches is that we stipulate the goals of clustering as discovering meaningful cluster structure in the data, rather than optimizing some objective (clustering cost).
+
+We introduce efficient algorithms that discover and cluster every subset of the data with meaningful structure and lack of structure on its complement (under some formal definition of such ``structure"). Notably, the success of our algorithms does not depend on any upper bound on the fraction of noisy data. We complement our results by showing that when either the notions of structure or the noise requirements are relaxed, no such results are possible.
+
+To tackle the challenge of under-specificity, we propose a framework for Semi-Supervised Active Clustering framework (SSAC). The learner is allowed to interact with a domain expert and can ask whether two given instances belong to the same cluster or not. We study the query and computational complexity of clustering in this framework. We consider a setting where the expert conforms to a center-based clustering with a notion of margin. In particular, we show that the algorithm succeeds for data satisfying margin conditions under which, without queries, the problem is NP hard. 
+
+The promising results obtained open several avenues for future work. In the proposed work, we would like to find datasets that satisfy our margin assumptions. We would also like to investigate whether popular clustering algorithms like $k$-means or $k$-median find the correct solution if the data satisfies our clusterability notion. If not then we would like to modify existing algorithms so that they work under our assumptions. We would also like to extend our SSAC framework to handle more realistic situations. We currently assume that the expert is perfect and doesn't make any mistakes. We would like to handle situations when the expert makes a mistake or chooses not to answer a query (because he/she is confused). We would also like to implement our algorithms and holistically analyze it against massive real world datasets.
 
 \cleardoublepage
 %\newpage
