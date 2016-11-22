@@ -432,7 +432,7 @@ $$\gamma d(x, \mu_i) < d(y, \mu_i)$$
 \cline{2-3}
 \multicolumn{1}{l|}{}                                                                     & \multicolumn{1}{l|}{Euclidean} & \multicolumn{1}{l|}{General Metric}                                                                         \\ \hline
 \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Centers \\ from data\end{tabular}}        & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : 2 (Thm. \ref{thm:upperCenterData})\\ Lower bound : ? \end{tabular}}    &       \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : 2 (Thm. \ref{thm:upperCenterData})\\ Lower bound : 2 (Thm. \ref{thm:lowerCenterData})\end{tabular}}           \\ \hline
-\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Unrestricted \\Centers \end{tabular}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : 3 (Thm. \ref{thm:upperCenterMetric})\\ Lower bound : 1.84 (Thm. \ref{A-thm:gammaLower})\\ \end{tabular}}         & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : 3 (Thm. \ref{thm:upperCenterMetric})\\ Lower bound : 3 (Thm. \ref{thm:lowerCenterMetric})\\ \end{tabular}} \\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Unrestricted \\Centers \end{tabular}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : 3 (Thm. \ref{thm:upperCenterMetric})\\ Lower bound : 1.84 (Thm. \ref{thm:gammaLower})\\ \end{tabular}}         & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Upper bound : 3 (Thm. \ref{thm:upperCenterMetric})\\ Lower bound : 3 (Thm. \ref{thm:lowerCenterMetric})\\ \end{tabular}} \\ \hline
                                                                                           &                       &    
 \label{table:gammamargin}                                                                                                                                                                                                 
 \end{tabular}
@@ -648,7 +648,7 @@ Given the number of clusters $k$ and parameters $r$ and $t$. For all $\lambda \l
 
 \subsection{Lower bound with arbitrary noise}
 \label{section:lambdaLowerBoundArbitrary}
-
+\vspace{-0.1in}
 \begin{theorem}
 \label{thm:nosparselambdaalg}
 Given the number of clusters $k$ and parameters $r$ and $t$. For all $\lambda < 6$, there exists a clustering instance $(\mc X , d)$ such that any clustering tree $\mc T$ of $\mc X$ has the following property. There exists $\mc S \subseteq \mc X$ and there exists $k$-clustering $\mc C_{\mc S}$ which satisfies $\lambda$-center separation such that $m(\mc C_{\mc S}) = t$, $r(\mc C_{\mc S}) = r$ and the following holds. If $|\mc X\setminus \mc S|\ge \frac{3t}{2}+5$, then $\mc T$ doesn't capture $\mc C_{\mc S}$ .
