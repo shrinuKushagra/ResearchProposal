@@ -1,0 +1,11 @@
+The hardness of k-means clustering. [Dasgupta 08]
+	for k = 2.
+	d = 2n
+	Special version of 3SAT to 2-means.
+	Not All Equal NAESAT reduced to 2-means.
+	
+	2-means in d-dimension can be solved in n^{d+1} time by enumerating all hyperplane separators.
+
+
+The Hardness of Approximation of Euclidean k-means [Awasthi, Charikar, Krishnaswamy, Sinop 15]
+	Reduction from vertex-cover on triangle-free graphs.

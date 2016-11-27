@@ -11,6 +11,8 @@
 % notice. 
 
 \documentclass{beamer}
+\setbeamercovered{transparent}
+
 \usepackage{color}
 \usepackage{amsmath}
 
@@ -50,11 +52,55 @@ University of Waterloo
 \end{frame}
 
 \begin{frame}{Clustering - Introduction}
-  Clustering is commonly applied but is vaguely defined.
+	Input: $(\mc X, d)$ and $k$\\
+	$\mc X  =\{x_1, \ldots, x_n\}$ and each $ x_i \subseteq \mb M$\\   
+	\vspace{1cm}Output: $\mc C = \{C_1, \ldots, C_k\}$\\
+	
 
 	\vspace{2cm}
 
 	Partition the input data into \alert{``well-separated''} subsets of \alert{``similar''} instances.
+\end{frame}
+
+\begin{frame}{Common approaches to clustering}
+
+	{\color{blue}Linkage-based} \\
+	
+	\vspace{0.5cm}Input : $(\mc X, d)$
+	\vspace{0.2cm}	\begin{block}{}
+		Initialize every point in its own cluster.\\
+		\vspace{0.41cm}Repeat until only one cluster remains
+		\begin{itemize}
+			\item Merge the two ``closest" clusters
+		\end{itemize}
+	\end{block}
+	
+	\pause
+	\vspace{0.5cm}Single-linkage: $$d(C_1, C_2) = \min\{d(x, y): x \in C_1, y \in C_2\}$$
+	\vspace{0.5cm}Max-linkage: $$d(C_1, C_2) = \max\{d(x, y): x \in C_1, y \in C_2\}$$
+	
+\end{frame}
+
+\begin{frame}{Common approaches to clustering}
+
+	{\color{blue}Center-based} \\
+	\vspace{0.4cm}Input: $(\mc X, d)$ and $k$\\
+	$\mc X  =\{x_1, \ldots, x_n\}$ and each $ x_i \subseteq \mb M$\\   
+	
+	\vspace{1cm}\alert{Choose} centers $\mu_1, \ldots, \mu_k \in \mb M$\\
+	\vspace{0.4cm}	Assign each $x \in \mc X$ to the closest center.
+	
+	\vspace{1cm}Proper - $\mu_i \in \mc X$\\
+	\vspace{0.5cm}Steiner - Unrestricted\\
+	
+\end{frame}
+
+\begin{frame}{Common center-based clustering approaches}
+	Associate cost with each possible choice of center.\\
+	\vspace{0.5cm}Find centers with minimum cost\\
+
+	\vspace{1cm}$K$-means $$\min_{\mu_1, \ldots, \mu_k \in \mb M} \sum_{i =1}^k \sum_{x \in C_i} d^2(x, \mu_i)\vspace{1cm}$$
+	$K$-median $$\min_{\mu_1, \ldots, \mu_k \in \mc X} \sum_{i =1}^k \sum_{x \in C_i} d(x, \mu_i)\vspace{0.5cm}$$
 \end{frame}
 
 \begin{frame}{Clustering is not easy}
@@ -69,33 +115,37 @@ University of Waterloo
 \end{frame}
 
 \begin{frame}{Computational hardness of clustering}
-	$$\min_{\mc C} \sum_{C_i \in \mc C} \sum_{x \in C_i} f(d(x, \mu(x)))\vspace{0.5cm}$$
-	
-	Common objectives are NP-Hard
+	\onslide<1>$K$-means is NP-Hard.
 	\begin{itemize}
-	  \vspace{0.3cm}\item $K$-means 	  
-	  \vspace{0.3cm}\item $K$-median
-	  \vspace{0.3cm}\item $K$-medoids
+		\item NP-Hard for $k=2$ \alert{[Dasgupta 08]}
+		\vspace{0.4cm}\item NP-Hard in the plane. \alert{[Vattani 09]}
+		\vspace{0.4cm}\item NP-Hard to approximate within $(1+\epsilon)$ \alert{[Awasthi et. al 15]}
+	\end{itemize} 
+	
+	\onslide<2>
+	\vspace{1cm}$K$-median is NP-Hard \alert{[Megiddo, Supowit 84]}.
+	\begin{itemize}
+		\vspace{0.4cm}\item $(3+\epsilon)$-approximation is known. \alert{[Arya et. al 04]}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Computational hardness of clustering}
-	$$\min_{\mc C} \sum_{C_i \in \mc C} \sum_{x \in C_i} f(d(x, \mu(x)))\vspace{0.5cm}$$
+\begin{frame}{Under-specificity in clustering}
 	
-	NP-Hard to approximate
-	\begin{itemize}
-	  \vspace{0.3cm}\item $K$-means 	  
-	\end{itemize}  
-	\vspace{0.5cm}$(3+\epsilon)$-approximation
-	\begin{itemize}
-	  \vspace{0.3cm}\item $K$-median
-    \end{itemize}
+	Requirements from clustering algorithms\\
+	\vspace{0.5cm}\begin{block}{}
+	1. Similar points together\\
+	\vspace{0.45cm}2. Dis-similar points separated
+	\end{block}
+	
+	\vspace{0.5cm}These requirements can be conflicting
+	\begin{center}
+	\includegraphics[trim={100 650 30 120},clip,width=0.8\textwidth]{figures/conflictingReq.pdf}
+	\end{center}
 \end{frame}
 
 \begin{frame}{Under-specificity in clustering}
-	\begin{center}
-	\includegraphics[trim={100 320 30 120},clip,width=0.8\textwidth]{figures/incompatible.pdf}
-	\end{center}
+
+
 \end{frame}
 
 \begin{frame}{The problem of under-specificity}

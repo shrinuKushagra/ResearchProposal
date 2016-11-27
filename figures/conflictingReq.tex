@@ -1,0 +1,46 @@
+\ifdefined\COMPLETE
+\else
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\usepackage{color}
+
+\usetikzlibrary{shapes, calc, arrows, through, intersections, decorations.pathreplacing, patterns}
+
+\begin{document}
+\fi
+\def\alph{$2+\sqrt{5}$}
+\begin{tikzpicture}[scale=7]
+	\coordinate (x) at ($ (-0.02,{sqrt(0)}) $);
+	\coordinate (y) at (2.1,0);
+	%\draw[thick] (x) --(y);
+
+	\node at (0.04,0) {$\bullet$};
+	\node at (0.14,0) {$\bullet$};
+	\node at (0.24,0) {$\bullet$};
+	\node at (0.34,0) {$\bullet$};
+	\node at (0.44,0) {{\color{green}(}$\bullet$};
+	\node at (0.54,0) {$\bullet$};
+	\node at (0.64,0) {$\bullet$};
+	\node at (0.74,0) {$\bullet$};
+	\node at (0.84,0) {$\bullet$};
+	\node at (0.94,0) {$\bullet$};
+	\node at (1.04,0) {$\bullet$};
+	\node at (1.14,0) {$\bullet$};
+	\node at (1.24,0) {$\bullet${\color{green})}};
+	\node at (1.34,0) {$\bullet$};
+	\node at (1.44,0) {$\bullet$};
+	\node at (1.54,0) {$\bullet$};
+	\node at (1.64,0) {$\bullet$};
+	\node at (1.74,0) {$\bullet$};
+	\node at (1.84,0) {$\bullet$};
+	\node at (1.94,0) {$\bullet$};
+	\node at (2.04,0) {$\bullet$};
+	
+	%\draw (A) -- (1.74, 0.06);
+\end{tikzpicture}
+
+
+\ifdefined\COMPLETE
+\else
+\end{document}
+\fi
