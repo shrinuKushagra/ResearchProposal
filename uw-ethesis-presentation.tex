@@ -15,6 +15,7 @@
 
 \usepackage{color}
 \usepackage{amsmath}
+\usepackage{subcaption}
 
 \usetheme{Madrid}
 \newcommand{\mc}{\mathcal}
@@ -728,6 +729,33 @@ Various notions of clusterability.\\
 
 	\end{itemize}
 \end{frame}
+
+\begin{frame}{Hardness proof}
+	$U = \{1, \ldots, 3m\}$ \\ 
+	$\mc S = \{S_1, \ldots, S_l\}$ \\
+	$S_i \subseteq U$ and $|S_i| = 3$\\ 
+	
+	\vspace{1cm} Does there exist $m$ elements in $\mc S$ such that their union is $U$? 	
+\end{frame}
+
+\begin{frame}{Hardness proof contd $\ldots$}
+	\begin{align*}
+	&h = \sqrt{5}, d = \sqrt{6}, \epsilon = \frac{1}{w^2}, \lambda = \frac{2}{\sqrt{3}}h, k = (l-1)3m + l(3m+2)\\
+	& L_1 = (6m+3)wl, L_2 = 3m(l-1)w, L = L_1 + L_2 - m\alpha, \alpha = \frac{d}{w}-\frac{1}{2w^3}
+	\end{align*}
+	
+	\begin{figure}
+		\begin{subfigure}{.5\textwidth}
+		\includegraphics[trim= 100 700 100 100,scale=0.7]{figures/lowerBdFig.pdf}
+		\end{subfigure}
+		\begin{subfigure}{.5\textwidth}
+		\includegraphics[trim=300 400 300 100, scale=0.5]{figures/ZFig.pdf}
+		\end{subfigure}
+	\end{figure}
+	
+	
+\end{frame}
+
 
 %----------------------------------------
 %        Figure Samples
