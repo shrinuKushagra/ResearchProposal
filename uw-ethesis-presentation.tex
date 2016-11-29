@@ -81,6 +81,12 @@ University of Waterloo
 	
 \end{frame}
 
+\begin{frame}{An example clustering tree}
+	\begin{figure}
+	  \includegraphics[trim = 50 150 50 200, clip, width=0.8\linewidth]{figures/hier.pdf}
+	\end{figure}
+\end{frame}
+
 \begin{frame}{Common approaches to clustering}
 
 	{\color{blue}Center-based} \\
@@ -92,147 +98,160 @@ University of Waterloo
 	
 	\vspace{1cm}Proper - $\mu_i \in \mc X$\\
 	\vspace{0.5cm}Steiner - Unrestricted\\
-	
 \end{frame}
 
 \begin{frame}{Common center-based clustering approaches}
 	Associate cost with each possible choice of center.\\
 	\vspace{0.5cm}Find centers with minimum cost\\
 
-	\vspace{1cm}$K$-means $$\min_{\mu_1, \ldots, \mu_k \in \mb M} \sum_{i =1}^k \sum_{x \in C_i} d^2(x, \mu_i)\vspace{1cm}$$
-	$K$-median $$\min_{\mu_1, \ldots, \mu_k \in \mc X} \sum_{i =1}^k \sum_{x \in C_i} d(x, \mu_i)\vspace{0.5cm}$$
+	\vspace{1cm}$K$-means objective$$\min_{\mu_1, \ldots, \mu_k \in \mb M} \sum_{i =1}^k \sum_{x \in C_i} d^2(x, \mu_i)\vspace{1cm}$$
+	$K$-median objective $$\min_{\mu_1, \ldots, \mu_k \in \mc X} \sum_{i =1}^k \sum_{x \in C_i} d(x, \mu_i)\vspace{0.5cm}$$
 \end{frame}
 
 \begin{frame}{Clustering is not easy}
 
   {\color{red}Challenges }
   \vspace{0.4cm}
-  \begin{itemize}
-    \item Computationally expensive
-    \vspace{1.5cm}
-	\item Under-specificity
-  \end{itemize}
+  \vspace{0.3cm}\begin{itemize}
+		\vspace{0.3cm}\item Computational Complexity
+		\vspace{0.3cm}{\color{lb} \MyCitem  Under-specificity }
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Computational hardness of clustering}
 	\onslide<1>$K$-means is NP-Hard.
 	\begin{itemize}
-		\item NP-Hard for $k=2$ \alert{[Dasgupta 08]}
-		\vspace{0.4cm}\item NP-Hard in the plane. \alert{[Vattani 09]}
-		\vspace{0.4cm}\item NP-Hard to approximate within $(1+\epsilon)$ \alert{[Awasthi et. al 15]}
+		\item NP-Hard for $k=2$ \alert{[Dasgupta `08]}
+		\vspace{0.4cm}\item NP-Hard in the plane. \alert{[Vattani `09]}
+		\vspace{0.4cm}\item NP-Hard to approximate within $(1+\epsilon)$ \alert{[Awasthi et. al `15]}
 	\end{itemize} 
 	
 	\onslide<2>
-	\vspace{1cm}$K$-median is NP-Hard \alert{[Megiddo, Supowit 84]}.
+	\vspace{1cm}$K$-median is NP-Hard \alert{[Megiddo, Supowit `84]}.
 	\begin{itemize}
-		\vspace{0.4cm}\item $(3+\epsilon)$-approximation is known. \alert{[Arya et. al 04]}
+		\vspace{0.4cm}\item $(3+\epsilon)$-approximation is known. \alert{[Arya et. al `04]}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Under-specificity in clustering}
-	
-	Requirements from clustering algorithms\\
-	\vspace{0.5cm}\begin{block}{}
-	1. Similar points together\\
-	\vspace{0.45cm}2. Dis-similar points separated
-	\end{block}
-	
-	\vspace{0.5cm}These requirements can be conflicting
-	\begin{center}
-	\includegraphics[trim={100 650 30 120},clip,width=0.8\textwidth]{figures/conflictingReq.pdf}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Under-specificity in clustering}
-
-
-\end{frame}
-
-\begin{frame}{The problem of under-specificity}
-	Complete information is not available
-	\vspace{2cm}
-
-	How to prefer one choice over the other?
-\end{frame}
-
-\begin{frame}{Related work}
-	Previous approaches to tackle
-	\vspace{0.3cm}\begin{itemize}
-		\vspace{0.3cm}\item computational complexity 
-		\vspace{0.3cm}{\color{lb} \MyCitem under-specificity}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Handling computational complexity}
-	Clustering on {\color{green}nice} data is {easy}.\\
-	\vspace{1cm}What is nice data?
+\begin{frame}{Previous approaches to tackle computational complexity}
+	Assume that the optimal clustering is {\color{green}nice}.\\
+	\vspace{1.5cm}What is a nice clustering?
 	\begin{itemize}
-		\vspace{0.3cm}\item $\alpha$-center proximity
-		\vspace{0.3cm}\item Weak deletion stability
-		\vspace{0.3cm}\item $\epsilon$-separatedness
-		\vspace{0.3cm}\item $\lambda$-center separation		
+		\vspace{0.4cm}\item $\alpha$-center proximity
+		\vspace{0.4cm}\item $\epsilon$-separatedness
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Center proximity}
+\begin{frame}{Center-proximity}
+	Given $(\mc X, d)$ and $k$.\\
+	Clustering $\mc C$ induced by centers $\mu_1, \ldots, \mu_k$\\
+	
 	\begin{center}
 	\includegraphics[trim={120 430 0 120},clip,width=0.7\textwidth]{figures/alphacp.pdf}
 	\end{center}
+	Every point $x$ is closer to its own cluster-center than to other centers\\
+	$\alpha$-controls degree of separation.
+\end{frame}
+
+\begin{frame}{Formally $\ldots$}
+	Given $(\mc X, d)$ and $k$.\\
+	\vspace{0.4cm}Clustering $\mc C$ induced by centers $\mu_1, \ldots, \mu_k$\\
 	
+	\vspace{1cm}\begin{block}{}
+		For all $i$, for all $j \neq i$ and for all $x \in C_i$
+		$$\alpha d(x, \mu_i) < d(x, \mu_j)$$	
+	\end{block}
+\end{frame}
+
+\begin{frame}{Clustering under center-proximity}
+	Given $(\mc X, d)$ and $k$.\\
+	Want to optimize some objective function.\\
+	
+	\vspace{0.5cm}Assume: Optimal solution satisfies $\alpha$-center proximity.\\
+	
+	\vspace{1cm}$K$-means objective
+	$$\min_{\mu_1, \ldots, \mu_k \in \mb M} \sum_{i =1}^k \sum_{x \in C_i} d^2(x, \mu_i)$$
 	\begin{itemize}
-		\item Efficiently solvable for $\alpha > 2.4$
-		\item NP-Hard for $\alpha < 2$.
-		\vspace{0.5cm}\item $\alpha = 2$ already \alert{unrealistic}.
+		\vspace{0.4cm}\item Efficiently solvable for $\alpha > 2 + \sqrt{3}$ \alert{[Awasthi, Blum, Sheffet `12]}
+		\vspace{0.4cm}\item NP-Hard for $\alpha \le 3$ \alert{[Awasthi, Blum, Sheffet `12]}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Clustering under center-proximity}	
+	Given $(\mc X, d)$ and $k$.\\
+	Want to optimize some objective function.\\
+	
+	\vspace{0.5cm}Assume: Optimal solution satisfies $\alpha$-center proximity.\\
+	
+	\vspace{1cm}$K$-median objective
+	$$\min_{\mu_1, \ldots, \mu_k \in \mc X} \sum_{i =1}^k \sum_{x \in C_i} d(x, \mu_i)$$
+		\begin{itemize}
+		\vspace{0.4cm}\item Efficiently solvable for $\alpha > 1 + \sqrt{2}$ \alert{[Balcan, Liang `12]}
+		\vspace{0.4cm}\item NP-Hard for $\alpha \le 2$ \alert{[Ben-David, Reyzin `14]}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Issues}
+	Assumption on the optimal\\
+	\vspace{0.4cm}Can't verify\\
+	
+	\vspace{1cm}Too strict even for $\alpha = 2$\\
+	\begin{center}
+	\includegraphics[trim={100 200 100 100},clip,width=0.7\textwidth]{figures/alpha2.pdf}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Relaxation of center-proximity}
+	Given $(\mc X, d)$ and $k$.\\
+	\vspace{0.4cm}Clustering $\mc C$ induced by centers $\mu_1, \ldots, \mu_k$
+	\vspace{0.5cm}\begin{block}{$(\alpha, \epsilon)$-center proximity}
+		There exists $\mc S \subseteq \mc X$ such that 
+		\begin{itemize}
+			\vspace{0.3cm}\item $|\mc X \setminus \mc S| \le \epsilon n$
+			\vspace{0.3cm}\item $\mc C$ restricted to $\mc S$ satisfies $\alpha$-center proximity
+		\end{itemize}
+	\end{block}
+	
+	\vspace{0.5cm}If $k$-median optimal satisfies $(2+\sqrt{7}, \epsilon)$-center proximity then 
+	\begin{itemize}
+		\item Can find $(1 + O(\epsilon))$-approximation to the optimal \alert{[Balcan, Liang `12]}.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Other clusterability notions}
-	$\epsilon$-separatedness\\
-	\begin{center}Cost(Opt(k)) $< \epsilon^2$Cost$(Opt(k-1))$\end{center}
-	\begin{itemize}
-		\item Can {\color{blue} explain success} of Lloyd's algorithm 
-		\item \alert{Very strict} assumptions on data $(\alpha > 200)$
-	\end{itemize}
 	
-	\vspace{0.5cm} WDS is similar to $\epsilon$-separatedness\\
+	{\color{blue}$\epsilon$-separatedness} \alert{[Ostrovsky et. al `12]}\\
+	\begin{center}Cost(Opt(k)) $< \epsilon^2$Cost$(Opt(k-1))$\end{center}
 
-	\vspace{0.5cm}$\lambda$-center separation
-	\begin{itemize}
-	\item Can somewhat {\color{blue} explain success} of $k$-means but \alert{very restrictive}.	 
-	\end{itemize}
+	\vspace{0.5cm}Can {\color{blue} explain success} of Lloyd's algorithm \\
+	
+	
+	\vspace{1cm}Algorithm finds a solution of cost atmost $(1+\Theta(\epsilon^2))-Opt$ with probability atleast $(1-\Theta(\epsilon^2))$\\
+	
+	\vspace{0.5cm} Takes $O(nk + k^3)$ time.
+	
+\end{frame}
+
+\begin{frame}{Issues}
+	\alert{Very strict} separability requirement
+	
+	\vspace{0.5cm}For $k = 2$, their algorithm succeeds with probability $1 - \frac{20\epsilon^2}{\sqrt{(1-\epsilon^2)(1-101\epsilon^2)}}$ \\
+
+	\vspace{0.5cm}For reasonable guarantee of success $\epsilon^2 < 1/200$\\
+	
+	\vspace{1cm}This implies that \alert{average radius} is much smaller than separation between two clusters 
+	\begin{align*}
+		r_i &< \frac{\epsilon}{\sqrt{1-\epsilon^2}} \min_{j \neq i} d(c_i, c_j)\\\\
+		\implies 14 r_i &< \min_{j \neq i} d(c_i, c_j) 
+	\end{align*}
 \end{frame}
 
 \begin{frame}{In conclusion}
 Various notions of clusterability.\\
-\vspace{1cm}None are both {\color{blue}realistic} and {\color{blue}efficient}.\\
-\vspace{1cm}Some can explain popular heuristics. But for unrealistic data. 
-\end{frame}
+\vspace{1cm}Not easy to verify as they make assumptions on the optimal. \\
+\vspace{1cm}Not {\color{blue}realistic}\\
+\vspace{1cm}Some can explain popular heuristics. But for unrealistic data. \\
 
-\begin{frame}{Related work}
-	Previous approaches to tackle
-	\vspace{0.3cm}\begin{itemize}
-		\vspace{0.3cm}{\color{lb} \MyCitem computational complexity }
-		\vspace{0.3cm}\item under-specificity
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Handling under-specificity}
-  Get \alert{advice} from an expert
-  \begin{itemize}
-        \vspace{0.3cm}\item User provides \textbf{must/cannot} link constraints.    
-        \vspace{0.3cm}\item Small sample clustering
-        \vspace{0.3cm}\item \textbf{Merge-split} queries.
-  \end{itemize}
-  
-  \vspace{1.5cm}None of them {\color{blue}realistic} and provably {\color{blue}efficient}.
-\end{frame}
-
-\begin{frame}{Current work}
-	Our approach to tackle
-	\vspace{0.3cm}\begin{itemize}
-		\vspace{0.3cm}\item computational complexity
-		\vspace{0.3cm}{\color{lb} \MyCitem under-specificity }
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{Realistic clusterability notion}
@@ -254,31 +273,23 @@ Various notions of clusterability.\\
    \end{figure}
 \end{frame}
 
-\begin{frame}{Current work}
-	Our approach to tackle
-	\vspace{0.3cm}\begin{itemize}
-		\vspace{0.3cm}{\color{lb} \MyCitem  computational complexity}
-		\vspace{0.3cm}\item under-specificity
-	\end{itemize}
+\begin{frame}{More formally $\ldots$}
+
+	Given $(\mc X, d)$, a set $\mc S \subseteq \mc X$\\
+	\vspace{0.5cm}A clustering $\mc C = \{S_1, \ldots, S_k\}$ of the set $\mc S$ induced by centers $s_1, \ldots, s_k$.
+
+	\vspace{1cm}\begin{block}{$(\alpha, \eta)$-center proximity}
+	\vspace{0.5cm} {\bf $\alpha$-center proximity}: For all $x \in S_i$ and $i\neq j$, $$\alpha d(x, s_i) < d(x, s_j)$$
+	{\bf $\eta$-sparse noise}: For any ball $B$, 
+	$$r(B)\leq \eta \thinspace r(\mc{C}) \implies |B\cap (\mc X\setminus \mc S)| < \frac{m(\mc C)}{2}$$
+	\end{block}
 \end{frame}
 
-\begin{frame}{Same-cluster query}
-    Do $x_1$ and $x_2$ belong to the same cluster?\\
-    \begin{center}
-	\includegraphics[width=0.25\linewidth]{figures/ml1.jpeg}
-	\hspace{0.3in}\includegraphics[width=0.15\linewidth]{figures/eqQues.jpg}\hspace{0.3in}
-	\includegraphics[width=0.15\linewidth]{figures/wl2.jpeg}
-    \end{center}
-    
-	\vspace{1.4cm} Another approach could be to allow {\color{blue}multiple solutions}
-\end{frame}
-
-\begin{frame}{Methods}
-	We use following methods to address the challenges in clustering.
-	\begin{itemize}
-		\vspace{0.9cm}\item $\underbrace{\text{Sparse noise}}_{\substack{\text{tackles computational} \\ \text{complexity}}}$ + $\underbrace{\text{multiple solutions}}_{\text{tackles under-specificity}}$
-		\vspace{0.9cm}{\color{lb} \MyCitem $\underbrace{\text{Same-cluster query}}_{\text{tackles under-specificity}}$ + $\underbrace{\text{realistic clusterability condition}}_{\substack{\text{tackles computational} \\ \text{complexity}}}$ }
-	\end{itemize}
+\begin{frame}{Possible justification of sparse noise}
+	Data $\mc S$ has nice structure.\\
+	\vspace{0.5cm} Noise $\mc N$ is added by a {\color{blue} non-concentrated} distribution.\\
+	\pause
+	\vspace{1cm} $\mc X = \mc S \cup \mc N$ satisfies the structureless noise definition with high probability.
 \end{frame}
 
 \begin{frame}{A high level problem description}
@@ -297,13 +308,6 @@ Various notions of clusterability.\\
 		\vspace{1.5cm}
 		\item Outputs a partition $C=(C_1, \ldots C_k)$ that \emph{induces} a good clustering of $\mc S$.
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Sparse noise definition}
-    \begin{figure}
-	  \includegraphics[trim = 100 0 0 100, clip, width=0.8\linewidth]{figures/alphacpnoise.pdf}
-   \end{figure}
-
 \end{frame}
 
 \begin{frame}{Our Results}
@@ -368,50 +372,128 @@ Various notions of clusterability.\\
 	Same ideas can be extended to a list output. Any list should have size $> 2^{k/2}$
 \end{frame}
 
-\begin{frame}{Methods}
-	We use following methods to address the challenges in clustering.
-	\begin{itemize}
-		\vspace{0.9cm}{\color{lb} \MyCitem $\underbrace{\text{Sparse noise}}_{\substack{\text{tackles computational} \\ \text{complexity}}}$ + $\underbrace{\text{multiple solutions}}_{\text{tackles under-specificity}}$}
-		\vspace{0.9cm}\item $\underbrace{\text{Same-cluster query}}_{\text{tackles under-specificity}}$ + $\underbrace{\text{realistic clusterability condition}}_{\substack{\text{tackles computational} \\ \text{complexity}}}$ 
+\begin{frame}{Clustering is not easy}
+
+  {\color{red}Challenges }
+  \vspace{0.4cm}
+  \vspace{0.3cm}\begin{itemize}
+		\vspace{0.3cm}{\color{lb} \MyCitem  Computational Complexity }
+		\vspace{0.3cm}\item Under-specificity
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Under-specificity in clustering}
+	
+	Requirements from clustering algorithms\\
+	\vspace{0.5cm}\begin{block}{}
+	1. Similar points together\\
+	\vspace{0.45cm}2. Dis-similar points separated
+	\end{block}
+	
+	\vspace{0.5cm}These requirements can be conflicting
+	\begin{center}
+	\includegraphics[trim={100 650 30 120},clip,width=0.8\textwidth]{figures/conflictingReq.pdf}
+	\end{center}
+\end{frame}
 
-\begin{frame}{A high level problem description}
-	Design algorithms that get a data set with a metric $(\mc X, d)$ so that
-	\vspace{1cm}
-	\begin{itemize}
-		\item Assuming that data satisfies $\gamma$-margin
-		\vspace{1.0cm}
-		\item Output the true partition $C=(C_1, \ldots C_k)$.
-		\vspace{1.0cm}
-		\item The learner can make same-cluster queries to an oracle.
+\begin{frame}{Example}
+	Given $\mc X \in \mb R^2$ and $k = 2$
+	\begin{center}
+	\includegraphics[trim={50 10 0 30},clip,width=0.5\textwidth]{figures/setX.png}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Example contd..}
+	Given $\mc X \in \mb R^2$ and $k = 2$
+	\begin{center}
+	\begin{figure}
+	\includegraphics[trim={0 0 0 20},clip,width=0.4\textwidth]{figures/slX.png}
+	\includegraphics[trim={0 0 0 20},clip,width=0.4\textwidth]{figures/kmeansX.png}
+	\caption{Single-linkage on our example dataset (Left). $K$-means on our example dataset (Right)}
+	\end{figure}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Considerations of different algorithms}
+	
+	{\color{blue}Single-linkage}\\
+	\vspace{0.3cm}Tries to put \alert{similar} points together\\
+	\vspace{0.3cm}Can end-up having dissimilar points together.\\
+	
+	\vspace{1cm}{\color{blue}$K$-Means}\\
+	\vspace{0.3cm}Tries to \alert{separate} dissimilar points\\
+	\vspace{0.3cm}Can end-up separating similar points.\\
+	
+\end{frame}
+
+\begin{frame}{The problem of under-specificity}
+	Different application require different approaches\\
+	\vspace{1cm} How to prefer one choice over the other?\\
+	\vspace{1.5cm} Add {\color{blue} bias} to express {\color{blue} prior domain knowledge}
+\end{frame}
+
+\begin{frame}{Previous approach to tackle under-specificity}
+	
+	{\color{blue}Must/cannot} link constraints \alert{[Basu et. al `02]}\\
+	\vspace{1cm}Sub-sample clustering \alert{[Ashtiani, Ben-David `15]}\\
+	\vspace{1cm}{\color{blue}Merge/split} queries \alert{[Balcan, Blum `08]}
+\end{frame}
+
+\begin{frame}{Our approach to tackle under-specificity}
+	
+	{\color{blue}Same-cluster query}\\
+    \vspace{1cm}Given a clustering $\mc C$ of set $\mc X$\\
+    \vspace{0.51cm}Ask same-cluster queries to a ${\mc C}$-oracle\\
+    $$f_{\mc C}(x_1, x_2) = \left\{
+	\begin{array}{ll}
+		\mbox{true }  & \mbox{if } x_1 \overset{\mc C}{\sim} x_2   \\
+		\mbox{false } & otherwise 
+	\end{array}
+\right. $$
+\end{frame}
+
+\begin{frame}{Problem Setting}
+	Input: $(\mc X, d)$
+	\begin{itemize} 
+   		\vspace{0.4cm}\item Learner can make same-cluster queries to $\mc C$-oracle
+		\vspace{0.4cm}\item Oracle's clustering is ``nice".     
 	\end{itemize}
+	\vspace{1.4cm} Recover the oracle's clustering $\mc C=(C_1, \ldots, C_k)$
 \end{frame}
 
-\begin{frame}{$\gamma$-margin property}
-	\begin{center}        
-	    \includegraphics[trim=500 470 500 190,scale=0.5]{figures/gammaMargin.pdf}
-    \end{center}    
-    
-    \begin{block}{}
-    $\mc C_{\mc X} = \{C_1, \ldots, C_k\}$ with centers $\{\mu_1, \mu_2, \ldots , \mu_k\}$ satisfies the $\gamma$-margin property if for all $x \in C_i$ and $y \in C_j$,
-
-	$$\gamma d(x, \mu_i) < d(y, \mu_i)$$   
-    \end{block}    
+\begin{frame}{$\gamma$-margin niceness}
+	Cluster-center is closer to its own points than to points outside.\\
+	\vspace{1cm}$\gamma$ controls the separation.
+	\vspace{1cm}\begin{figure}        
+            \centering\includegraphics[trim= 400 470 400 150, scale=0.5]{figures/gammaMargin.pdf}
+    \end{figure}  
 \end{frame}
 
-\begin{frame}{$\gamma$-margin without queries}
+\begin{frame}{Formally $\ldots$}
+	Given $(\mc X, d)$ and $k$.\\
+	\vspace{0.4cm}Clustering $\mc C$ induced by centers $\mu_1, \ldots, \mu_k$\\
+	
+	\vspace{1cm}\begin{block}{}
+		For all $i$, for all $x \in C_i$ and for all $y \not\in C_i$
+		$$\gamma d(x, \mu_i) < d(y, \mu_i)$$	
+	\end{block}  
+\end{frame}
 
-    \begin{center}        
-	    \includegraphics[trim=500 470 500 190,scale=0.5]{figures/gammaMargin.pdf}
-    \end{center} 
-  
-  \vspace{0.5cm}In a ``$k$-median" like setting
-  \begin{itemize}
-    \vspace{0.3cm}\item {\color{blue} Tractable} for $\gamma > 2$
-    \vspace{0.3cm}\item \alert{NP-Hard} for $\gamma < 2$
-    \end{itemize}
+\begin{frame}{Margin vs center-proximity (no queries)}
+  Given $(\mc X, d)$ and $k$\\
+  \vspace{0.5cm}Optimal $k$-means solution satisifies nice property ($\gamma$-margin or $\alpha$-center proximity)
+
+	\begin{table}[]
+	\centering
+	%\caption{My caption}
+	\label{my-label}
+	\begin{tabular}{llllll}
+	\multicolumn{1}{c}{} &  &  & \begin{tabular}[c]{@{}l@{}}$\alpha$-center \\ proximity\end{tabular} &  & \begin{tabular}[c]{@{}l@{}}$\gamma$-margin\end{tabular} \\
+	 &  &  &  &  &  \\
+	K-means &  &  & \begin{tabular}[c]{@{}l@{}}upper bound: 3.7\\ lower bound: 3\end{tabular} &  & \begin{tabular}[c]{@{}l@{}}upper bound: 3\\ lower bound: 3\end{tabular} \\
+	K-median &  &  & \begin{tabular}[c]{@{}l@{}}upper bound: 2.4\\ lower bound: 2\end{tabular} &  & \begin{tabular}[c]{@{}l@{}}upper bound: 2\\ lower bound: 2\end{tabular}
+	\end{tabular}
+	\end{table}
 \end{frame}
 
 
@@ -432,48 +514,73 @@ Various notions of clusterability.\\
    \end{itemize}
 \end{frame}
 
-\begin{frame}{Our results}
-	\alert{Negative result} 
+\begin{frame}{$K$-means revisited}
+	Input: $\mc X \subseteq \mb R^d$ and $k$\\
+	\vspace{0.5cm}Find $\mu_1, \ldots, \mu_k$ so as to minimize
+	$$\sum_{i=1}^k \sum_{x \in C_i} \|x - \mu_i\|^2$$
+	
+	\vspace{1cm}\alert{Additional information}\\
+	\vspace{0.5cm} The optimal solution satisfies $\gamma$-margin.
+\end{frame}
+
+\begin{frame}{$K$-means revisted}
+	\alert{Negative result without queries} 
 	\vspace{0.5cm}
     \begin{itemize}
-    \item $\gamma < 1.84$ and no queries.\\
-    \vspace{0.3cm} {NP-Hard to find the optimal $k$-means clustering}
-    \vspace{0.5cm}
-    \item Sub-logarithmic queries don't help.
-  \end{itemize}
+	    \item $\gamma < 1.84$ \\
+	    \vspace{0.3cm} {NP-Hard to find an optimal}
+	\end{itemize}
+
+	\vspace{1cm}\color{blue}{Positive result with queries} 
+	\vspace{0.5cm}
+    \begin{itemize}
+	    \item $\gamma > 1$ \\
+	    \vspace{0.3cm} {Efficiently find the optimal using $O(\log n)$ queries}
+	\end{itemize}
 \end{frame}
 
-\begin{frame}{Key Takeaways}
-\begin{itemize}
-	\item \textcolor{blue}{Interactive clustering} can tackle \alert{under-specificity} \\
-	\vspace{1.0cm}
-	\item A few \textcolor{blue}{queries} can make an \textcolor{red}{NP-hard} problem tractable
-\end{itemize}
+\begin{frame}{Surprising Conclusion}
+
+    \begin{block}{}
+    \begin{center}{\Large NP-hard for $\gamma<1.84$\\
+      \vspace{0.2cm}\textbf{BUT} \\
+      \vspace{0.3cm}tractable with $O(\log n)$ queries.}
+    \end{center}
+    \end{block}
 \end{frame}
 
-\begin{frame}{Clustering with queries}
+\begin{frame}{Clustering with Queries}
   \begin{block}{The algorithm}
 	\vspace{0.2cm}Input: $(\mc X, d)$, $k$ and parameters $\gamma$ and $\delta$.\\
     \vspace{0.2cm}Output: A clustering of $\mc X$.\\
-	\vspace{0.3cm}
+	\vspace{0.4cm}
+	1. Estimate center\\
 	\begin{itemize}
-	  \item Query uniformly till we have ``enough'' points from one cluster
-      \vspace{0.2cm}
-	  \item Estimate its center
-      \vspace{0.2cm}
-	  \item Binary search to find the ``radius"
-      \vspace{0.2cm}
-	  \item Remove the cluster and repeat
+		\item Query uniformly till we have ``enough'' points from one cluster
     \end{itemize}  
+	\vspace{0.4cm}
+	2. Compute radius\\
+	\begin{itemize}
+	  \vspace{0.2cm}
+	  \item Binary search to find the ``radius"
+    \end{itemize}  
+	\vspace{0.4cm}
+	3. Delete and repeat
   \end{block}
 \end{frame}
 
-\begin{frame}{The algorithm}   
-   \begin{figure}
-	  \includegraphics[trim = 100 0 0 120, clip, width=\linewidth]{figures/gammaAlgo.pdf}
-   \end{figure}
+\begin{frame}{Algorithm}
+	\only<1>{\centering\includegraphics[scale=0.15]{figures/gammaAlg/gammaAlgo-0.png}}
+	\only<2>{\centering\includegraphics[scale=0.15]{figures/gammaAlg/gammaAlgo-1.png}}
+	\only<3>{\centering\includegraphics[scale=0.15]{figures/gammaAlg/gammaAlgo-2.png}}
+	\only<4>{\centering\includegraphics[scale=0.15]{figures/gammaAlg/gammaAlgo-3.png}}
+	\only<5>{\centering\includegraphics[scale=0.15]{figures/gammaAlg/gammaAlgo-4.png}}
+	\only<6>{\centering\includegraphics[scale=0.15]{figures/gammaAlg/gammaAlgo-5.png}}
+	\only<7>{\centering\includegraphics[scale=0.15]{figures/gammaAlg/gammaAlgo-6.png}}
+	\only<8>{\centering\includegraphics[scale=0.15]{figures/gammaAlg/gammaAlgo-7.png}}
+	\only<9>{\centering\includegraphics[scale=0.15]{figures/gammaAlg/gammaAlgo-8.png}}
 \end{frame}
-
+      
 \begin{frame}{Lower Bound}
 	Euclidean $k$-means is NP-hard even when the optimal solution satisfies the $\gamma$-margin property for $\gamma < 1.84$
 	\vspace{0.3cm} 
@@ -485,9 +592,19 @@ Various notions of clusterability.\\
 	\vspace{0.7cm}Small number of queries
 	\vspace{0.3cm}
 	\begin{itemize}	
-		\item NP-hard with $O(\log n)$ queries
-		\vspace{0.3cm}\item Simulation trick
+		\item NP-hard with $O(\log n)$ queries for $\gamma < 1.84$
 	\end{itemize}	    
+\end{frame}
+
+\begin{frame}{Summary}
+  \begin{itemize}
+    
+    \item Interactive model for clustering
+    \vspace{0.5cm}
+    \item An efficient algorithm to find the ``true'' clustering
+    \vspace{0.5cm}
+    \item An NP-hard problem became tractable using few queries
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Future work}
@@ -518,7 +635,7 @@ Various notions of clusterability.\\
 	\vspace{1cm}Convergence of popular heuristics?
 \end{frame}
 
-\begin{frame}{Sparse noise against these metrics}
+\begin{frame}{Clusterability notion}
 	\vspace{1cm}Efficient?
 	\begin{itemize}
 		\vspace{0.4cm}\item Efficiently represent all solutions 

@@ -1,0 +1,41 @@
+\ifdefined\COMPLETE
+\else
+\documentclass[12pt]{article}
+\usepackage{tikz}
+\usepackage{color}
+
+\usetikzlibrary{shapes, calc, arrows, through, intersections, decorations.pathreplacing, patterns}
+
+\begin{document}
+\fi
+\def\alph{$2+\sqrt{5}$}
+\begin{tikzpicture}[scale=7]
+	\coordinate (x) at ($ (-0.02,{sqrt(0)}) $);
+	\coordinate (y) at (2.1,0);
+
+	\node[green] at (0.04,0) {$\bullet$};
+	\node[green] at (0.14,0) {$\bullet$};
+	\node[green,label=270:$\mu_1$] at (0.24,0) {$\bullet$};
+	\node[green] at (0.34,0) {$\bullet$};
+	\node[green] at (0.44,0) {$\bullet$};
+	
+	\node[red] at (0.64,0) {$\bullet$};
+	\node[red] at (0.74,0) {$\bullet$};
+	\node[red,label=270:$\mu_2$] at (0.84,0) {$\bullet$};
+	\node[red] at (0.94,0) {$\bullet$};
+	\node[red] at (1.04,0) {$\bullet$};
+
+	\node[label=$R$] at (0.27, 0.05) {};
+	\node[label=$2R$] at (0.4, -0.2) {};
+	
+	\draw[black, dashed] (0.24,0.0) circle (0.2);
+	\draw[black, dashed] (0.24,0.0) circle (0.4);
+	\draw[thick,->] (0.24, 0) -- (0.24, 0.2);
+	\draw[thick,->] (0.24, 0) -- (0.6, -0.16);
+\end{tikzpicture}
+
+
+\ifdefined\COMPLETE
+\else
+\end{document}
+\fi

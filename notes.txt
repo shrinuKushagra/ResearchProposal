@@ -1,11 +1,67 @@
+
 The hardness of k-means clustering. [Dasgupta 08]
 	for k = 2.
 	d = 2n
 	Special version of 3SAT to 2-means.
-	Not All Equal NAESAT reduced to 2-means.
-	
+	Not All Equal NAESAT reduced to 2-means.	
 	2-means in d-dimension can be solved in n^{d+1} time by enumerating all hyperplane separators.
 
 
 The Hardness of Approximation of Euclidean k-means [Awasthi, Charikar, Krishnaswamy, Sinop 15]
 	Reduction from vertex-cover on triangle-free graphs.
+	
+	
+Constrained K-means Clustering with Background Knowledge[Wagstaff, Cardie, Rogers, Schroedl 01]
+	Two types of constraints are provided as input.
+	Must-link and cannot-link
+	The K-means algorithm is modified to respect the constraints. 
+	Implementation on some datasets.
+	
+	
+Sem-supervised Clustering by Seeding [Basu, Banerjee, Mooney 02]
+	Seeds are provided which are used to select the initial choice of centers
+	Implementation on some datasets
+	
+
+Representation Learning for Clustering: A Statistical Framework [Ashtiani, Ben-David 15]
+	Want to partition a set X. We know that k-means is k-rich.
+	Hence, for every partition P there exists a metric d_P such that k-means w.r.t metric returns P.
+	Given a class of metrics F, find the best metric such that k-means w.r.t metric is close to the subsample clustering.
+	Analyses the sample complexity (size of the sub-sample user needs to cluster) of this task.
+	Upper bounded by (k + Pdim(F) + log(1/delta)/epsilon^2
+	
+
+Clustering with Interactive Feedback [Balcan, Blum 08]
+	Each cluster in the target is a member of some given concept class C
+	User evaluates a given clustering and suggests either to merge two clusters or split a cluster
+	Stop and return when no suggestions
+	1. Real line + class of intervals - klog m queries
+	2. General class C - k^3 log |C| 
+	3. If instead we restrict the algorithm to producing clusterings with only poly(k,log m,log |C|) clusters then even for simple classes no algorithm can succeed.
+	
+
+Stability yields a PTAS for k-Median and k-Means Clustering	[Awasthi, Blum, Sheffet 10]
+	assume k-means and k-median satisfy weak deletion stability
+	this implies a property called beta-distributed
+	k-median:
+		algorithm finds (1+epsilon)-approximation. Runs in O(n^{1/alpha epsilon} k^{1/epsilon}) 
+	k-means:
+		algorithm finds (1+epsilon)-approximation. Runs in O(n^3 (klog n)^{poly(1/alpha, 1/ epsilon)})
+	1/alpha > k AvgDis / d_{min}. So run-time is exponential in k.
+	For ``most" of the clusters: d(x, ci) >= 0.5 alpha log(k) AvgDis
+	
+
+Clusterability: A Theoretical Study [Ackerman, Ben-David 09]
+	optimal doesn't change under small additive pertubations.
+	O(kn^{k/epsilon^2})
+	
+
+Clustering in the Presence of Background Noise [Ben-David, Haghtalab 14]
+	covered by k well-separated set of balls. 
+	converts any center-based clustering algorithm into a clustering algorithm which is robust to small amount of noise.
+	It requires a strong restriction on the noise and clusterability of the data
+	example, when the size of the noise is 5%, their algorithm is able to obtain a robustified version of 2-median
+	if unit balls are separated by distance 10.
+	
+	robustified version
+	clustering on the nice set should be the same.
